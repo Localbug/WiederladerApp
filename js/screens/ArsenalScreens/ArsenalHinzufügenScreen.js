@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { SectionList, StyleSheet, Text, View } from 'react-native';
+import {Button, SectionList, StyleSheet, Text, View } from 'react-native';
+import {erzeugeTabellen} from '../../../js/DataContext';
+import DBContext from '../../../js/DataContext';
 
 function SettingsItem(props) {
   return <Text style={styles.item}>{props.text}</Text>;
@@ -8,6 +10,11 @@ function SettingsItem(props) {
 function SettingsHeader(props) {
   return <Text style={styles.section}>{props.text}</Text>;
 }
+
+function testfunc() {
+  //alert("Test");
+}
+
 
 export default class ArsenalHinzufuegenScreen extends Component {
   render() {
@@ -32,6 +39,30 @@ export default class ArsenalHinzufuegenScreen extends Component {
             <SettingsHeader text={section.title} />
           )}
         />
+
+        <View style= {{position: 'absolute', bottom:5, right:5}}>
+          <Button
+            title= "In DB hinzufügen"
+            onPress={() =>
+              {
+                //alert("Button geklickt...Hier soll DB angelegt und FakeDaten hinzugefügt werden")
+
+                const testdaten = { 
+                    datensatz: 'Geschoss', 
+                    bezeichnung: 'AusFormular308WIN', 
+                    kaliber: '308WIN'};
+
+                db = new DBContext();
+                db.erzeugeTabellen();
+                db.initialTestDatenSpeichern();
+                db.speichereDaten(testdaten);
+
+              }}
+          />
+        </View>
+
+
+
       </View>
     );
   }

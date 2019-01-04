@@ -29,7 +29,7 @@ export default class ArsenalItemScreen extends Component {
   state = { data: [], isLoading: true};
 
   _fetchData(){
-    alert('Seite hat geladen!');
+    //alert('Seite hat geladen!');
     this.setState({ isLoading: false });
   };
 
