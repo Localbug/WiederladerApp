@@ -5,7 +5,8 @@ import React, { Component } from 'react';
 import { ActivityIndicator, Button, FlatList, Dimensions, Image, ScrollView, View, StyleSheet, Text } from 'react-native';
 
 import ArsenalListItem from './ArsenalScreens/ArsenalListItem';
-
+import DBContext from '../../js/DataContext';
+db = new DBContext();
 
 var geschosse = new Object();
 geschosse = { 
@@ -14,9 +15,6 @@ geschosse = {
     'bc': ".420",
     'preis': "0,30",
 }
-
-
-
 
 export default class ArsenalItemScreen extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -28,19 +26,31 @@ export default class ArsenalItemScreen extends Component {
 
   state = { data: [], isLoading: true};
 
-  _fetchData(){
+  _DefaultTestDatenInDBLaden(){
+    //db = new DBContext();
+    db.initialTestDatenSpeichern();
+    console.log('ArsenalSubMenuScreenErgenislog: Default Testdaten wurden in DB geladen ');
+  };
+
+  _EintraegeAusDBLaden(){
     //alert('Seite hat geladen!');
-    this.setState({ isLoading: false });
+    //db = new DBContext();
+    var ergebnise = db.ladeDaten();
+    //console.log('Ergenislog: ', ergebnise[0].bezeichnung);
+    //alert('Lade Ergbnis:', ergebnise.bezeichnung);
+    this.setState({ isLoading: false, data: ergebnise });
   };
 
   _refresh = () => {
     this.setState({ isLoading: true });
-    this._fetchData();
+    this._EintraegeAusDBLaden();
   };
 
   componentDidMount() {
-    //alert('componentDidMount!');
-    this._fetchData();
+    //this._DefaultTestDatenInDBLaden();
+    //this._EintraegeAusDBLaden();
+    console.log('ArsenalSubMenuScreenErgenislog: DB Initialisierung bei componentDidMount aufrufen.. ');
+    db.InitialisiereDatenbak();
   }
 
   render() {
@@ -113,7 +123,8 @@ export default class ArsenalItemScreen extends Component {
         <View style={styles.container}>
 
           <FlatList
-            data={daten}
+            //data={daten}
+            data={this.state.data}
             keyExtractor={item => item.bezeichnung}
             renderItem={({ item }) => (
               <ArsenalListItem

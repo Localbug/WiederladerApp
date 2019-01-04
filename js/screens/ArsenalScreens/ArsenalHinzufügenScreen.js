@@ -54,7 +54,7 @@ export default class ArsenalHinzufuegenScreen extends Component {
 
                 db = new DBContext();
                 db.erzeugeTabellen();
-                db.initialTestDatenSpeichern();
+                //db.initialTestDatenSpeichern();
                 db.speichereDaten(testdaten);
 
               }}

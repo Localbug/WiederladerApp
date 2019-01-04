@@ -22,8 +22,8 @@ export default class SettingsScreen extends Component {
             {
               title: 'Impressum',
               data: [
-                { key: '2', info: 'Beispiel GmbH' },
-                { key: '3', info: 'copyright 2018' }
+                { key: '2', Entwickler: 'Fabian Dorner' },
+                { key: '3', App: 'WiederladerApp - copyright 2018' }
               ]
             }
           ]}
