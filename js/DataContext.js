@@ -4,6 +4,16 @@ import Expo, { SQLite } from 'expo';
 
 const database = SQLite.openDatabase('testdb.db');
 
+
+function loescheTabelle(tabellenname) {
+    console.log('DataContext - Funktion loescheTabelle: '+tabellenname);
+    database.transaction(tx => {
+        tx.executeSql(
+          'DROP TABLE '+ tabellenname
+        );
+      });
+}
+
 function erzeugeTabellen() {
     console.log('DataContext - Funktion erzeugeTabelle: TabellenStruktur wird erstellt ');
     database.transaction(tx => {
@@ -11,16 +21,6 @@ function erzeugeTabellen() {
           'create table if not exists geschosse (id integer primary key not null, bezeichnung int, kaliber text);'
         );
       });
-    /*
-    const sqlErzeugeGeschosseTabelle = "CREATE TABLE IF NOT EXIST testdaten (id INTEGER PRIMARY KEY NOT NULL, bezeichnung TEXT, kaliber TEXT);"
-
-    database.transaction(transaction =>
-        transaction.executeSql(sqlErzeugeGeschosseTabelle)   
-    );
-
-    const DBObject = Expo.FileSystem.getInfoAsync('SQLite/<testdaten>');
-    console.log("Pfad:", DBObject.uri);
-    */
 }
 
 function nop(){
@@ -28,15 +28,52 @@ function nop(){
 }
 
 function testDatenInDBErzeugen(){
-    console.log('DataContext - Funktion testDatenInDBErzeugen: testDaten werden in DB gespeichern ');
-    const text = "blubblub";
+    
+    testdaten = [
+        { datensatz: 'Geschoss', 
+        bezeichnung: '108WIN', 
+        kaliber: '108', 
+        gewicht: '168', 
+        bc: '.420' ,
+        preis: '0,28',
+        picture: {uri: 'https://png.pngtree.com/svg/20161205/bullet_561433.png'}},
+        { datensatz: 'Geschoss', 
+        bezeichnung: '208WIN', 
+        kaliber: '208', 
+        gewicht: '155', 
+        bc: '.400' ,
+        preis: '0,30',
+        picture: {uri: 'https://png.pngtree.com/svg/20161205/bullet_561433.png'}},
+        { datensatz: 'Geschoss', 
+        bezeichnung: '308WIN', 
+        kaliber: '308', 
+        gewicht: '178', 
+        bc: '.410' ,
+        preis: '0,32',
+        picture: {uri: 'https://png.pngtree.com/svg/20161205/bullet_561433.png'}},
+        { datensatz: 'Geschoss', 
+        bezeichnung: '408WIN', 
+        kaliber: '408', 
+        gewicht: '170', 
+        bc: '.430' ,
+        preis: '0,45',
+        picture: {uri: 'https://png.pngtree.com/svg/20161205/bullet_561433.png'}},
+    ];
+    
+    
+    console.log('DataContext - Funktion testDatenInDBErzeugen: TestDaten werden in DB gespeichern ');
+    //console.log('DataContext - Testdatensatz1: ' +testdaten[0].bezeichnung +'&'+testdaten[0].kaliber);
     database.transaction(
         tx => {
-          tx.executeSql('insert into geschosse (bezeichnung, kaliber) values (0, ?)', [text]);
+            for(var i=0;i<testdaten.length;i++){
+                tx.executeSql('insert into geschosse (bezeichnung, kaliber) values (?, ?)', [testdaten[i].bezeichnung, testdaten[i].kaliber] );
+                console.log('Erstellter Testdatensatz'+i+" - "+testdaten[i].bezeichnung +'&'+testdaten[i].kaliber);
+            }
+          //tx.executeSql('insert into geschosse (bezeichnung, kaliber) values (0, ?)', [testdaten[0].bezeichnung, testdaten[0].kaliber] );
           
-          tx.executeSql('select * from geschosse', [], (_, { rows }) =>
-            console.log(JSON.stringify(rows))
-          );
+          //tx.executeSql('select * from geschosse', [], (_, { rows }) =>
+          //  console.log(JSON.stringify(rows))
+          //);
         },
         null,
         this.nop
@@ -69,99 +106,85 @@ function testDatenInDBErzeugen(){
         */
 }
 
-export default class DataContext extends Component {
 
+
+function speichereDatensatz(tabellenname, datenObject){
+    console.log('DataContext - Funktion speichereDatensatz: Daten aus Datenobject werden gespeichert ');
+    const bezeichnung = datenObject.bezeichnung;
+    const kaliber = datenObject.kaliber;
+    console.log('Zu speichernde Daten:'+ datenObject.bezeichnung +'&' +datenObject.kaliber);
+    database.transaction(
+        tx => {
+          tx.executeSql('insert into geschosse (bezeichner, kaliber) values ("Bla", "Blub")', []);  
+          //tx.executeSql('insert into ? (bezeichner, kaliber) values (?, ?)', [tabellenname, datenObject.bezeichnung, datenObject.kaliber]);
+          console.log("!!!!!!!!!!!!!!!!!!!!!");
+          //tx.executeSql('select * from geschosse', [], (_, { rows }) =>
+          //  console.log(JSON.stringify(rows))
+          //);
+        },
+        null,
+        this.nop
+      );
+}
+
+function ladeDBdaten(tabellenname){
+    console.log('DataContext - Funktion ladeDBdaten: ladeDBdaten werden aus DB geladen ');
+    var ergebnis;
+    database.transaction(
+        tx => {
+          tx.executeSql('select * from '+tabellenname, [], (_, { rows }) =>{
+                console.log(JSON.stringify(rows))
+                ergebnis = JSON.stringify(rows)
+            }
+          );
+        },
+        null,
+        this.nop
+      );
+    return ergebnis;
+}
+
+
+function löscheZeile(tabellenname, id){
+    console.log('DataContext - Funktion löscheZeile: Es wird in Tabelle:'+tabellenname+"die ID:"+id+" gelöscht!");
+    database.transaction(
+        tx => {
+          tx.executeSql("DELETE FROM "+tabellenname+" WHERE id="+id, [], (_, { rows }) =>{
+            console.log("Aus Tabelle: "+tabellenname+" wurde ID:"+id+" gelöscht!")}
+          );
+        },
+        null,
+        this.nop
+      );
+}
+
+
+export default class DataContext extends Component {
 
     InitialisiereDatenbak() {
         erzeugeTabellen();
         testDatenInDBErzeugen();
-        alert('DB Initialisiert und Testdaten erstellt!');
+        //alert('DB Initialisiert und Testdaten erstellt!');
     }
 
-    /*
-    speichereDaten(G_data) {
-        const sqlGeschossDatensatzSpeichern ="INSERT INTO Geschosse (bezeichnung, kaliber) VALUES (?,?)"
-
-        database.transaction(transaction =>
-            transaction.executeSql(
-                sqlGeschossDatensatzSpeichern, 
-                [G_data.bezeichnung, G_data.kaliber],
-                (transaction, result) => Console.log(result.insertId))   
-        );
-        alert('Es wurde, ' + G_data.bezeichnung + 'gespeichert');
-
+    loescheDatensatz(Tabellenname, ID){
+        //TODO: gegen SQLInjection sichern
+       löscheZeile(Tabellenname, ID);
     }
 
-    ladeDaten() {
-        const sqlGeschosseAuslesen = "SELECT * FROM Geschosse);"
-        var ergebnis;
-        alert('Lade aus DB..');
-
-        database.transaction(transaction =>
-            transaction.executeSql(
-                sqlGeschosseAuslesen, 
-                [],
-                (transaction, result) => {
-                    ergebnis = result.rows._array
-                    alert('geladen: , ' + result.rows);
-                })   
-        );
-        return ergebnis;
+    loescheTabelle(Tabellenname){
+        //TODO: gegen SQLInjection sichern
+        loescheTabelle(Tabellenname);
     }
 
-
-    löscheZeile(id) {
-        const sqlGeschosseZeileLöschen = "DELETE FROM Geschosse WHERE id=?"
-
-        database.transaction(transaction =>
-            transaction.executeSql(
-                sqlGeschosseZeileLöschen, 
-                [id])   
-        );
+    speichereDatensatz(tabellenname, datenObject){
+        //TODO: gegen SQLInjection sichern
+        speichereDatensatz(tabellenname, datenObject);
     }
 
-
-    erzeugeTabellen() {
-        alert("in erzeugen");
-        
-        const sqlErzeugeGeschosseTabelle = "CREATE TABLE IF NOT EXIST Geschosse (id INTEGER PRIMARY KEY NOT NULL, bezeichnung TEXT, kaliber TEXT);"
-
-        database.transaction(transaction =>
-            transaction.executeSql(sqlErzeugeGeschosseTabelle)   
-        );
+    ladeDaten(Tabellenname){
+        //TODO: gegen SQLInjection sichern
+        return ladeDBdaten(Tabellenname);
     }
-
-
-        
-     daten = [
-        { datensatz: 'Geschoss', 
-        bezeichnung: '108WIN', 
-        kaliber: '108', 
-        gewicht: '168', 
-        bc: '.420' ,
-        preis: '0,28',
-        picture: {uri: 'https://png.pngtree.com/svg/20161205/bullet_561433.png'}},
-        { datensatz: 'Geschoss', 
-        bezeichnung: '208WIN', 
-        kaliber: '208', 
-        gewicht: '155', 
-        bc: '.400' ,
-        preis: '0,30',
-        picture: {uri: 'https://png.pngtree.com/svg/20161205/bullet_561433.png'}},
-        { datensatz: 'Geschoss', 
-        bezeichnung: '308WIN', 
-        kaliber: '308', 
-        gewicht: '178', 
-        bc: '.410' ,
-        preis: '0,32',
-        picture: {uri: 'https://png.pngtree.com/svg/20161205/bullet_561433.png'}},
-        { datensatz: 'Geschoss', 
-        bezeichnung: '408WIN', 
-        kaliber: '408', 
-        gewicht: '170', 
-        bc: '.430' ,
-        preis: '0,45',
-        picture: {uri: 'https://png.pngtree.com/svg/20161205/bullet_561433.png'}},
-    ];
-    */
+   
 }

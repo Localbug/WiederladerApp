@@ -47,10 +47,35 @@ export default class ArsenalItemScreen extends Component {
   };
 
   componentDidMount() {
-    //this._DefaultTestDatenInDBLaden();
-    //this._EintraegeAusDBLaden();
-    console.log('ArsenalSubMenuScreenErgenislog: DB Initialisierung bei componentDidMount aufrufen.. ');
+    ////this._DefaultTestDatenInDBLaden();
+    ////this._EintraegeAusDBLaden();
+    db.loescheTabelle('geschosse');
+    /*
+    db.loescheDatensatz('geschosse',  '1');
+    db.loescheDatensatz('geschosse',  '2');
+    db.loescheDatensatz('geschosse',  '3');
+    db.loescheDatensatz('geschosse',  '4');
+    db.loescheDatensatz('geschosse',  '5');
+    db.loescheDatensatz('geschosse',  '6');
+    */
     db.InitialisiereDatenbak();
+
+
+    //const erg = db.ladeDaten('geschosse');
+    //console.log('Ergebnis ist: ', erg);
+    //alert=("Ergebnis ist: "+erg);
+
+
+    datensatz = new Object;
+    datensatz.datensatz = 'Geschoss'; 
+    datensatz.bezeichnung = 'EchteBezeichnunng';
+    datensatz.kaliber = 'EchtesKaliber';
+    db.speichereDatensatz('geschosse', datensatz);
+
+    const erg = db.ladeDaten('geschosse');
+    console.log('Ergebnis ist: ', erg);
+
+
   }
 
   render() {
