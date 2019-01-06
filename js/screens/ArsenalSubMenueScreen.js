@@ -8,14 +8,6 @@ import ArsenalListItem from './ArsenalScreens/ArsenalListItem';
 import DBContext from '../../js/DataContext';
 db = new DBContext();
 
-var geschosse = new Object();
-geschosse = { 
-    'bezeichnung': "308WIN - Lapua Scenar mit Moly",
-    'kaliber': "308",
-    'bc': ".420",
-    'preis': "0,30",
-}
-
 export default class ArsenalItemScreen extends Component {
   static navigationOptions = ({ navigation }) => {
     const ausgewaehltesArsenalMenue = navigation.getParam('ausgewaehltesArsenalMenue');
@@ -26,92 +18,93 @@ export default class ArsenalItemScreen extends Component {
 
   state = { data: [], isLoading: true};
 
-  _DefaultTestDatenInDBLaden(){
-    //db = new DBContext();
-    db.initialTestDatenSpeichern();
-    console.log('ArsenalSubMenuScreenErgenislog: Default Testdaten wurden in DB geladen ');
-  };
-
-  _EintraegeAusDBLaden(){
-    //alert('Seite hat geladen!');
-    //db = new DBContext();
-    var ergebnise = db.ladeDaten();
-    //console.log('Ergenislog: ', ergebnise[0].bezeichnung);
-    //alert('Lade Ergbnis:', ergebnise.bezeichnung);
-    this.setState({ isLoading: false, data: ergebnise });
-  };
-
   _refresh = () => {
     this.setState({ isLoading: true });
-    this._EintraegeAusDBLaden();
+    //this._EintraegeAusDBLaden();
   };
 
   componentDidMount() {
-    ////this._DefaultTestDatenInDBLaden();
-    ////this._EintraegeAusDBLaden();
+
     db.loescheTabelle('geschosse');
-    /*
-    db.loescheDatensatz('geschosse',  '1');
-    db.loescheDatensatz('geschosse',  '2');
-    db.loescheDatensatz('geschosse',  '3');
-    db.loescheDatensatz('geschosse',  '4');
-    db.loescheDatensatz('geschosse',  '5');
-    db.loescheDatensatz('geschosse',  '6');
-    */
-    db.InitialisiereDatenbak();
 
+    db.InitialisiereDatenbak(); //Datenbanktabelle anlegen + Testdaten erzeugen
 
-    //const erg = db.ladeDaten('geschosse');
-    //console.log('Ergebnis ist: ', erg);
-    //alert=("Ergebnis ist: "+erg);
-
-
-    datensatz = new Object;
-    datensatz.datensatz = 'Geschoss'; 
-    datensatz.bezeichnung = 'EchteBezeichnunng';
-    datensatz.kaliber = 'EchtesKaliber';
-    db.speichereDatensatz('geschosse', datensatz);
+    //In State sollen Benutzereingaben des Formulars gespeichert und hier in der Datenbank gespeichert werden
+    //
+      const tempErgebnisausDB = [
+        { datensatz: 'Geschoss', 
+        bezeichnung: '308WIN', 
+        kaliber: '308', 
+        gewicht: '168', 
+        bc: '.420' ,
+        preis: '0,40',
+        picture: {uri: 'https://png.pngtree.com/svg/20161205/bullet_561433.png'}},
+        { datensatz: 'Geschoss', 
+        bezeichnung: '223Rem', 
+        kaliber: '223', 
+        gewicht: '90', 
+        bc: '.400' ,
+        preis: '0,25',
+        picture: {uri: 'https://png.pngtree.com/svg/20161205/bullet_561433.png'}},
+        { datensatz: 'Geschoss', 
+        bezeichnung: '338WIN', 
+        kaliber: '338', 
+        gewicht: '250', 
+        bc: '.410' ,
+        preis: '0,72',
+        picture: {uri: 'https://png.pngtree.com/svg/20161205/bullet_561433.png'}},
+        { datensatz: 'Geschoss', 
+        bezeichnung: '50BMG', 
+        kaliber: '50', 
+        gewicht: '320', 
+        bc: '.390' ,
+        preis: '1,65',
+        picture: {uri: 'https://png.pngtree.com/svg/20161205/bullet_561433.png'}},
+      ];
 
     const erg = db.ladeDaten('geschosse');
-    console.log('Ergebnis ist: ', erg);
+    console.log('Ergebnis ist: '+ erg);
 
+    this.setState({data: tempErgebnisausDB,  isLoading: false })
+    console.log('Ergebnis in State gesetzt: '+JSON.stringify(this.state.data));
 
   }
 
   render() {
     const ausgewaehltesArsenalMenue = this.props.navigation.getParam('ausgewaehltesArsenalMenue');
     
-    const daten = [
+    //Frage: Wenn ich die testdaten als const vor der Klasse deklariere, kann ich in Pfeilfunktion nicht auf Testdaten zugreifen. Warum muss die Deklaration hier drin statt finden?
+    testdaten = [
       { datensatz: 'Geschoss', 
-        bezeichnung: '108WIN', 
-        kaliber: '108', 
-        gewicht: '168', 
-        bc: '.420' ,
-        preis: '0,28',
-        picture: require('../../assets/GeschossIcon.png')},
+      bezeichnung: '308WIN', 
+      kaliber: '308', 
+      gewicht: '168', 
+      bc: '.420' ,
+      preis: '0,40',
+      picture: {uri: 'https://png.pngtree.com/svg/20161205/bullet_561433.png'}},
       { datensatz: 'Geschoss', 
-        bezeichnung: '208WIN', 
-        kaliber: '208', 
-        gewicht: '155', 
-        bc: '.400' ,
-        preis: '0,30',
-        picture: require('../../assets/GeschossIcon.png')},
+      bezeichnung: '223Rem', 
+      kaliber: '223', 
+      gewicht: '90', 
+      bc: '.400' ,
+      preis: '0,25',
+      picture: {uri: 'https://png.pngtree.com/svg/20161205/bullet_561433.png'}},
       { datensatz: 'Geschoss', 
-        bezeichnung: '308WIN', 
-        kaliber: '308', 
-        gewicht: '178', 
-        bc: '.410' ,
-        preis: '0,32',
-        picture: require('../../assets/GeschossIcon.png')},
+      bezeichnung: '338WIN', 
+      kaliber: '338', 
+      gewicht: '250', 
+      bc: '.410' ,
+      preis: '0,72',
+      picture: {uri: 'https://png.pngtree.com/svg/20161205/bullet_561433.png'}},
       { datensatz: 'Geschoss', 
-        bezeichnung: '408WIN', 
-        kaliber: '408', 
-        gewicht: '170', 
-        bc: '.430' ,
-        preis: '0,45',
-        picture: {uri: 'https://png.pngtree.com/svg/20161205/bullet_561433.png'}},
+      bezeichnung: '50BMG', 
+      kaliber: '50', 
+      gewicht: '320', 
+      bc: '.390' ,
+      preis: '1,65',
+      picture: {uri: 'https://png.pngtree.com/svg/20161205/bullet_561433.png'}},
     ];
-    const d = daten[0];
+
 
     if (this.state.isLoading)
       return (
@@ -140,16 +133,11 @@ export default class ArsenalItemScreen extends Component {
         <Text style= {{position: 'absolute', top:5, left:20, padding: 10}}> 
           Liste aller hinzugefügten {ausgewaehltesArsenalMenue.menueTitel} 
         </Text>
-
-        <Text style= {{position: 'absolute', top:15, left:20, padding: 10}}> 
-          gespeicherte Daten {d.bezeichnung} 
-        //</Text>
     
         <View style={styles.container}>
-
           <FlatList
-            //data={daten}
-            data={this.state.data}
+            //data={DatensatzDerAußerhalbDerKlasseDefiniertwurde} //Frage: Warum kann ich nicht auf globale Variablen zugreifen
+            data={this.state.data} //Frage: Ich bekomm die testdaten nicht in den State
             keyExtractor={item => item.bezeichnung}
             renderItem={({ item }) => (
               <ArsenalListItem
@@ -168,14 +156,8 @@ export default class ArsenalItemScreen extends Component {
               <Text style={styles.listEmpty}>Keine Daten vorhanden</Text>
             )}
           />
-
-
         </View>
-
-
-
       </ScrollView>
-
     )
   }
 }
@@ -216,33 +198,3 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   }
 });
-
-
-/*
-
-
-        <View style={styles.FlatListcontainer}>
-          <FlatList
-            //data={this.state.data}
-            //keyExtractor={item => item.bezeichnung}
-            renderItem={({ item }) => (
-              <ArsenalListItem
-              //ausgewaehltesArsenalMenue={item}
-                onPress={() =>Alert.alert('Arsenal Item angeklickt')}
-                /*onPress={() =>
-                  this.props.navigation.navigate('ItemDetailsScreen', {
-                    ausgewaehltesArsenalMenue: item
-                  })
-                }
-                />
-                )}
-                //onRefresh={this._refresh}
-                //refreshing={this.state.isLoading}
-                ItemSeparatorComponent={() => <View style={styles.listSeparator} />}
-                //ListEmptyComponent={() => (
-                //  <Text style={styles.listEmpty}>Keine Daten geladen</Text>
-                //)}
-              />
-            </View>
-
-*/

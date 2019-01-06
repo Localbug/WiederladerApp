@@ -9,18 +9,18 @@ function loescheTabelle(tabellenname) {
     console.log('DataContext - Funktion loescheTabelle: '+tabellenname);
     database.transaction(tx => {
         tx.executeSql(
-          'DROP TABLE '+ tabellenname
+        'DROP TABLE '+ tabellenname
         );
-      });
+    });
 }
 
 function erzeugeTabellen() {
     console.log('DataContext - Funktion erzeugeTabelle: TabellenStruktur wird erstellt ');
     database.transaction(tx => {
         tx.executeSql(
-          'create table if not exists geschosse (id integer primary key not null, bezeichnung int, kaliber text);'
+        'create table if not exists geschosse (id integer primary key not null, datensatztyp text, bezeichnung text, kaliber text, gewicht text, bc blob, preis real, bild blob);'
         );
-      });
+    });
 }
 
 function nop(){
@@ -31,118 +31,91 @@ function testDatenInDBErzeugen(){
     
     testdaten = [
         { datensatz: 'Geschoss', 
-        bezeichnung: '108WIN', 
-        kaliber: '108', 
-        gewicht: '168', 
-        bc: '.420' ,
-        preis: '0,28',
-        picture: {uri: 'https://png.pngtree.com/svg/20161205/bullet_561433.png'}},
-        { datensatz: 'Geschoss', 
-        bezeichnung: '208WIN', 
-        kaliber: '208', 
-        gewicht: '155', 
-        bc: '.400' ,
-        preis: '0,30',
-        picture: {uri: 'https://png.pngtree.com/svg/20161205/bullet_561433.png'}},
-        { datensatz: 'Geschoss', 
         bezeichnung: '308WIN', 
         kaliber: '308', 
-        gewicht: '178', 
-        bc: '.410' ,
-        preis: '0,32',
+        gewicht: '168', 
+        bc: '.420' ,
+        preis: '0,40',
         picture: {uri: 'https://png.pngtree.com/svg/20161205/bullet_561433.png'}},
         { datensatz: 'Geschoss', 
-        bezeichnung: '408WIN', 
-        kaliber: '408', 
-        gewicht: '170', 
-        bc: '.430' ,
-        preis: '0,45',
+        bezeichnung: '223Rem', 
+        kaliber: '223', 
+        gewicht: '90', 
+        bc: '.400' ,
+        preis: '0,25',
+        picture: {uri: 'https://png.pngtree.com/svg/20161205/bullet_561433.png'}},
+        { datensatz: 'Geschoss', 
+        bezeichnung: '338WIN', 
+        kaliber: '338', 
+        gewicht: '250', 
+        bc: '.410' ,
+        preis: '0,72',
+        picture: {uri: 'https://png.pngtree.com/svg/20161205/bullet_561433.png'}},
+        { datensatz: 'Geschoss', 
+        bezeichnung: '50BMG', 
+        kaliber: '50', 
+        gewicht: '320', 
+        bc: '.390' ,
+        preis: '1,65',
         picture: {uri: 'https://png.pngtree.com/svg/20161205/bullet_561433.png'}},
     ];
     
     
     console.log('DataContext - Funktion testDatenInDBErzeugen: TestDaten werden in DB gespeichern ');
-    //console.log('DataContext - Testdatensatz1: ' +testdaten[0].bezeichnung +'&'+testdaten[0].kaliber);
+
     database.transaction(
         tx => {
             for(var i=0;i<testdaten.length;i++){
-                tx.executeSql('insert into geschosse (bezeichnung, kaliber) values (?, ?)', [testdaten[i].bezeichnung, testdaten[i].kaliber] );
-                console.log('Erstellter Testdatensatz'+i+" - "+testdaten[i].bezeichnung +'&'+testdaten[i].kaliber);
+                tx.executeSql('insert into geschosse (datensatztyp, bezeichnung, kaliber, gewicht, bc, preis, bild) values (?, ?, ?, ?, ?, ?, ?)', 
+                [testdaten[i].datensatztyp, testdaten[i].bezeichnung, testdaten[i].kaliber, testdaten[i].gewicht, testdaten[i].bc, testdaten[i].preis, testdaten[i].bild] );
+                console.log('Erstellter Testdatensatz'+i+" - "+testdaten[i].datensatztyp+'&'+testdaten[i].bezeichnung +'&'+testdaten[i].kaliber+'&'+testdaten[i].gewicht +'&'+testdaten[i].bc+'&'+testdaten[i].preis +'&'+testdaten[i].bild);
             }
-          //tx.executeSql('insert into geschosse (bezeichnung, kaliber) values (0, ?)', [testdaten[0].bezeichnung, testdaten[0].kaliber] );
-          
-          //tx.executeSql('select * from geschosse', [], (_, { rows }) =>
-          //  console.log(JSON.stringify(rows))
-          //);
+        //tx.executeSql('select * from geschosse', [], (_, { rows }) =>
+        //  console.log(JSON.stringify(rows))
+        //);
         },
         null,
         this.nop
-      );
-    /*
-    database.transaction(transaction =>
-        transaction.executeSql(
-            'INSERT INTO testdaten (bezeichnung, kaliber) VALUES ("bla","blub")',
-            [],
-            (_, result) => {
-                alert('testdaten gespeichert - Anzahl Reihen: , ' + result.rows);
-            })   
-    )*/
+    );
 
-    /*
-    const sqlGeschossDatensatzSpeichern ="INSERT INTO Geschosse (bezeichnung, kaliber) VALUES (?,?)"
-
-        database.transaction(transaction =>
-            transaction.executeSql(
-                sqlGeschossDatensatzSpeichern, 
-                ["TestGeschossGewehrName", "223WIN"],
-                (transaction, result) => Console.log("Zeile/ID: ",result.insertId," in DB angelegt"))   
-        );
-        database.transaction(transaction =>
-            transaction.executeSql(
-                sqlGeschossDatensatzSpeichern, 
-                ["TestGeschossPistoleName", "375MAG"],
-                (transaction, result) => Console.log("Zeile/ID: ",result.insertId," in DB angelegt"))   
-        );
-        */
 }
 
 
 
 function speichereDatensatz(tabellenname, datenObject){
     console.log('DataContext - Funktion speichereDatensatz: Daten aus Datenobject werden gespeichert ');
-    const bezeichnung = datenObject.bezeichnung;
-    const kaliber = datenObject.kaliber;
-    console.log('Zu speichernde Daten:'+ datenObject.bezeichnung +'&' +datenObject.kaliber);
+
     database.transaction(
         tx => {
-          tx.executeSql('insert into geschosse (bezeichner, kaliber) values ("Bla", "Blub")', []);  
-          //tx.executeSql('insert into ? (bezeichner, kaliber) values (?, ?)', [tabellenname, datenObject.bezeichnung, datenObject.kaliber]);
-          console.log("!!!!!!!!!!!!!!!!!!!!!");
-          //tx.executeSql('select * from geschosse', [], (_, { rows }) =>
-          //  console.log(JSON.stringify(rows))
-          //);
+            tx.executeSql('insert into geschosse (datensatztyp, bezeichnung, kaliber, gewicht, bc, preis, bild) values (?, ?, ?, ?, ?, ?, ?)', 
+            [datenObject.datensatztyp, datenObject.bezeichnung, datenObject.kaliber, datenObject.gewicht, datenObject.bc, datenObject.preis, datenObject.bild] );
+            console.log('Erstellter Testdatensatz - '+datenObject.datensatztyp +'&'+datenObject.bezeichnung+'&'+datenObject.kaliber+'&'+datenObject.gewicht,+'&'+datenObject.bc+'&'+datenObject.preis+'&'+datenObject.bild);
         },
         null,
         this.nop
-      );
+    );
 }
 
 function ladeDBdaten(tabellenname){
-    console.log('DataContext - Funktion ladeDBdaten: ladeDBdaten werden aus DB geladen ');
-    var ergebnis;
-    database.transaction(
+    var ergebnis1;
+    var ergebnis2 = database.transaction(
         tx => {
-          tx.executeSql('select * from '+tabellenname, [], (_, { rows }) =>{
-                console.log(JSON.stringify(rows))
-                ergebnis = JSON.stringify(rows)
+        tx.executeSql('select * from '+tabellenname, [], (_, { rows }) =>{
+                ergebnis1 = rows._array;
+                //Frage: Wie kann hier der State der ArsenalItemScreen Komponente gesetzt werden //ArsenalScreenKomponent.setState(data: rows._array);
+                console.log("Hier ist das Object vorhanden!? "+JSON.stringify(ergebnis1));
             }
-          );
+        );
         },
         null,
         this.nop
-      );
-    return ergebnis;
+    );
+    //Frage: Warum sind die ergebnisse undefined. Wie bekomm ich das Ergenis aus der Pfeilfunktion oben heraus?
+    console.log("Hier ist das Object undefined!? "+JSON.stringify(ergebnis1));
+    console.log("Hier ist das Object undefined!? "+JSON.stringify(ergebnis2));
+    return ergebnis1;
 }
+
 
 
 function löscheZeile(tabellenname, id){
@@ -161,10 +134,11 @@ function löscheZeile(tabellenname, id){
 
 export default class DataContext extends Component {
 
+    //var variablenname //Frage: Warum kann man in Klassen keine Variablen anlegen?
+
     InitialisiereDatenbak() {
         erzeugeTabellen();
         testDatenInDBErzeugen();
-        //alert('DB Initialisiert und Testdaten erstellt!');
     }
 
     loescheDatensatz(Tabellenname, ID){
