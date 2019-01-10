@@ -48,7 +48,7 @@ export default function(props) {
       );
       break;
     default:
-      <TouchableOpacity onPress={onPress}>
+      return (<TouchableOpacity onPress={onPress}>
         <View style={styles.container}>
           <View style={styles.info}>
             <Text style={styles.smallText}>
@@ -58,7 +58,7 @@ export default function(props) {
             </Text>
           </View>
         </View>
-      </TouchableOpacity>;
+      </TouchableOpacity>);
   }
 }
 

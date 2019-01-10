@@ -1,6 +1,4 @@
-import React, { Component } from 'react';
-import { SectionList, StyleSheet, Text, View } from 'react-native';
-import Expo, { SQLite } from 'expo';
+import { SQLite } from 'expo';
 
 const database = SQLite.openDatabase('testdb.db');
 
@@ -22,11 +20,6 @@ function erzeugeTabellen() {
         );
     });
 }
-
-function nop(){
-    console("IN nop");
-}
-
 function testDatenInDBErzeugen(){
     
     testdaten = [
@@ -74,8 +67,7 @@ function testDatenInDBErzeugen(){
         //  console.log(JSON.stringify(rows))
         //);
         },
-        null,
-        this.nop
+        null
     );
 
 }
@@ -92,12 +84,11 @@ function speichereDatensatz(tabellenname, datenObject){
             [datenObject.datensatztyp, datenObject.bezeichnung, datenObject.kaliber, datenObject.gewicht, datenObject.bc, datenObject.preis, datenObject.bild] );
             console.log('Erstellter Testdatensatz - '+datenObject.datensatztyp +'&'+datenObject.bezeichnung+'&'+datenObject.kaliber+'&'+datenObject.gewicht,+'&'+datenObject.bc+'&'+datenObject.preis+'&'+datenObject.bild);
         },
-        null,
-        this.nop
+        null
     );
 }
 
-function ladeDBdaten(tabellenname){
+function ladeDBdaten(tabellenname, callback){
     var ergebnis1;
     var ergebnis2 = database.transaction(
         tx => {
@@ -105,15 +96,20 @@ function ladeDBdaten(tabellenname){
                 ergebnis1 = rows._array;
                 //Frage: Wie kann hier der State der ArsenalItemScreen Komponente gesetzt werden //ArsenalScreenKomponent.setState(data: rows._array);
                 console.log("Hier ist das Object vorhanden!? "+JSON.stringify(ergebnis1));
+                // Antwort: dies kann über einen Callback geschehen, dem das Ergebnis der Abfrage übergeben wird
+                callback(ergebnis1);
             }
         );
-        },
-        null,
-        this.nop
+        }
     );
     //Frage: Warum sind die ergebnisse undefined. Wie bekomm ich das Ergenis aus der Pfeilfunktion oben heraus?
     console.log("Hier ist das Object undefined!? "+JSON.stringify(ergebnis1));
     console.log("Hier ist das Object undefined!? "+JSON.stringify(ergebnis2));
+    // Antwort erstes console.log: ergebnis1 ist undefined, weil database.transaction undefined als Rückgabewert (glaube ich)
+    // es muss mit callbacks gearbeitet werden, wie oben zu sehen
+    // Antwort zweites console.log: weil die Transaktion asynchron im Hintergrund abläuft
+    // das zweite console.log werden ausgeführt bevor die Transaktion fertig ist
+    // daher ist ergebnis2 undefined
     return ergebnis1;
 }
 
@@ -127,15 +123,22 @@ function löscheZeile(tabellenname, id){
             console.log("Aus Tabelle: "+tabellenname+" wurde ID:"+id+" gelöscht!")}
           );
         },
-        null,
-        this.nop
+        null
       );
 }
 
 
-export default class DataContext extends Component {
+export default class DataContext {
 
     //var variablenname //Frage: Warum kann man in Klassen keine Variablen anlegen?
+    // Antwort: Klassen können Instanzvariablen haben:
+    myVariable = 123; 
+    // dies ist allerdings noch kein JS-Standard
+    // besser im Constructor:
+
+    constructor() {
+        this.variable = 5678;
+    }
 
     InitialisiereDatenbak() {
         erzeugeTabellen();
@@ -157,9 +160,9 @@ export default class DataContext extends Component {
         speichereDatensatz(tabellenname, datenObject);
     }
 
-    ladeDaten(Tabellenname){
+    ladeDaten(Tabellenname, callback){
         //TODO: gegen SQLInjection sichern
-        return ladeDBdaten(Tabellenname);
+        return ladeDBdaten(Tabellenname, callback);
     }
    
 }

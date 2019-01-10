@@ -62,10 +62,9 @@ export default class ArsenalItemScreen extends Component {
         picture: {uri: 'https://png.pngtree.com/svg/20161205/bullet_561433.png'}},
       ];
 
-    const erg = db.ladeDaten('geschosse');
-    console.log('Ergebnis ist: '+ erg);
+    db.ladeDaten('geschosse', ergebnis => this.setState({data: ergebnis,  isLoading: false }));
 
-    this.setState({data: tempErgebnisausDB,  isLoading: false })
+    // this.setState({data: tempErgebnisausDB,  isLoading: false })
     console.log('Ergebnis in State gesetzt: '+JSON.stringify(this.state.data));
 
   }
@@ -104,7 +103,6 @@ export default class ArsenalItemScreen extends Component {
       preis: '1,65',
       picture: {uri: 'https://png.pngtree.com/svg/20161205/bullet_561433.png'}},
     ];
-
 
     if (this.state.isLoading)
       return (
