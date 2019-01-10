@@ -85,6 +85,7 @@ function testDatenInDBErzeugen(){
 function speichereDatensatz(tabellenname, datenObject){
     console.log('DataContext - Funktion speichereDatensatz: Daten aus Datenobject werden gespeichert ');
 
+    //TODO: Je nach Tabellenname muss unterschiedlicher Insert ausgeführt werden!
     database.transaction(
         tx => {
             tx.executeSql('insert into geschosse (datensatztyp, bezeichnung, kaliber, gewicht, bc, preis, bild) values (?, ?, ?, ?, ?, ?, ?)', 

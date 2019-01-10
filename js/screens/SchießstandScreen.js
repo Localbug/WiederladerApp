@@ -17,14 +17,13 @@ export default class SettingsScreen extends Component {
           sections={[
             {
               title: 'Version',
-              data: [{ key: '1', info: '1.0' }]
+              data: [{ key: '1', info: '0.2' }]
             },
             {
               title: 'Impressum',
               data: [
-                { key: '2', Entwickler: 'Fabian Dorner' },
-                { key: '3', App: 'WiederladerApp - copyright 2018' }
-              ]
+              { key: '2', Entwickler: 'Fabian Dorner' },
+              { key: '3', AppName: 'WiederladerApp'} ]
             }
           ]}
           renderItem={({ item }) => <SettingsItem text={item.info} />}

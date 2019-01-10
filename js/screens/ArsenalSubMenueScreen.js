@@ -125,7 +125,7 @@ export default class ArsenalItemScreen extends Component {
             title= "hinzufügen"
             onPress={() =>
                   this.props.navigation.navigate('ArsenalHinzufügenScreen', {
-                    ausgewaehltesArsenalMenue: ausgewaehltesArsenalMenue
+                    ausgewaehltesArsenalMenue: ausgewaehltesArsenalMenue,
                   })}
           />
         </View>
