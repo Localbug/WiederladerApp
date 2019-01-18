@@ -4,6 +4,8 @@ import {
   FlatList,
   StyleSheet,
   Text,
+  Button,
+  ScrollView,
   View
 } from 'react-native';
 
@@ -42,27 +44,40 @@ export default class LaborierungScreen extends Component {
         </View>
       );
     return (
+
       <View style={styles.container}>
-        <FlatList
-          data={this.state.data}
-          keyExtractor={item => item.email}
-          renderItem={({ item }) => (
-            <LaborierungListItem
-              ausgewaehlteLaborierung={item}
-              onPress={() =>
-                this.props.navigation.navigate('LaborierungItemScreen', {
-                  ausgewaehlteLaborierung: item
-                })
-              }
-            />
-          )}
-          onRefresh={this._refresh}
-          refreshing={this.state.isLoading}
-          ItemSeparatorComponent={() => <View style={styles.listSeparator} />}
-          ListEmptyComponent={() => (
-            <Text style={styles.listEmpty}>Keine Daten geladen</Text>
-          )}
-        />
+        <View style= {{position: 'absolute', top:30, right:5}}>
+          <Button
+            title= "neue erstellen"
+            onPress={() =>
+                  this.props.navigation.navigate('ArsenalHinzufügenScreen', {
+                    ausgewaehltesArsenalMenue: ausgewaehltesArsenalMenue,
+                  })}
+          />
+        </View>
+
+        <View style= {{position: 'absolute', top:100}}>
+          <FlatList
+            data={this.state.data}
+            keyExtractor={item => item.email}
+            renderItem={({ item }) => (
+              <LaborierungListItem
+                ausgewaehlteLaborierung={item}
+                onPress={() =>
+                  this.props.navigation.navigate('LaborierungItemScreen', {
+                    ausgewaehlteLaborierung: item
+                  })
+                }
+              />
+            )}
+            onRefresh={this._refresh}
+            refreshing={this.state.isLoading}
+            ItemSeparatorComponent={() => <View style={styles.listSeparator} />}
+            ListEmptyComponent={() => (
+              <Text style={styles.listEmpty}>Keine Daten geladen</Text>
+            )}
+          />
+        </View>
       </View>
     );
   }
