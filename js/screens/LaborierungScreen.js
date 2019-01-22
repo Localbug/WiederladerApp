@@ -10,33 +10,54 @@ import {
 } from 'react-native';
 
 import LaborierungListItem from '../components/LaborierungListItem';
+import DBContext from '../DataContext';
 
 export default class LaborierungScreen extends Component {
   static navigationOptions = { header: null };
 
   state = { data: [], isLoading: true };
 
-  _fetchData = async () => {
-    try {
-      const response = await fetch('https://randomuser.me/api/?results=20');
-      const responseJSON = await response.json();
-      this.setState({ data: responseJSON.results, isLoading: false });
-    } catch (error) {
-      alert('Keine Internetverbindung');
-      this.setState({ isLoading: false });
-    }
-  };
+ _ladeLaborierungDatenAusDB = async () => {
+  try {
+    //Frage: Warum kann ich tabelle laborierung nicht genau so laden wie tabelle geschosse in ArsenalSubMenueScreen?
+    db = new DBContext();
+    db.ladeDaten('laborierungen', ergebnis => this.setState({data: ergebnis,  isLoading: false }));
+    console.log('Laborierungen geladen und in State gesetzt: '+JSON.stringify(this.state.data));
+
+  } catch (error) {
+    console.log('Fehler - Laborierenscreen: Laborierungen konnten nicht geladen werden! ');
+    alert('Fehler: Keine laborierung DB Daten empfangen');
+    this.setState({ isLoading: false });
+  }
+};
+
+_ladeLaborierungDatenAusDB_MOCK(){
+
+  db = new DBContext();
+  db.ladeMOCKLaborierungsDaten(ergebnis => this.setState({data: ergebnis,  isLoading: false }));
+  
+  //Frage: Warum bekomm ich nicht mal in diesem Mock ohne die DB das Array in den State?
+  console.log('Laborierungen geladen und in State gesetzt: '+JSON.stringify(this.state.data));
+  console.log('Laborierungen geladen und in State gesetzt: '+JSON.stringify(this.state.data[0]));
+
+};
+
+
+
 
   _refresh = () => {
     this.setState({ isLoading: true });
-    this._fetchData();
+    this._ladeLaborierungDatenAusDB();
   };
 
   componentDidMount() {
-    this._fetchData();
+    //this._ladeLaborierungDatenAusDB();
+    this._ladeLaborierungDatenAusDB_MOCK();
   }
 
   render() {
+    //const ausgewaehltesArsenalMenue = this.props.navigation.getParam('ausgewaehltesArsenalMenue');
+
     if (this.state.isLoading)
       return (
         <View style={styles.container}>
@@ -50,8 +71,8 @@ export default class LaborierungScreen extends Component {
           <Button
             title= "neue erstellen"
             onPress={() =>
-                  this.props.navigation.navigate('ArsenalHinzufügenScreen', {
-                    ausgewaehltesArsenalMenue: ausgewaehltesArsenalMenue,
+                  this.props.navigation.navigate('LaborierungHinzufügenScreen', {
+                    //ausgewaehltesArsenalMenue: ausgewaehltesArsenalMenue,
                   })}
           />
         </View>
@@ -59,9 +80,9 @@ export default class LaborierungScreen extends Component {
         <View style= {{position: 'absolute', top:100}}>
           <FlatList
             data={this.state.data}
-            keyExtractor={item => item.email}
+            keyExtractor={item => item.bezeichnung} //item.email
             renderItem={({ item }) => (
-              <LaborierungListItem
+              <LaborierungListItem 
                 ausgewaehlteLaborierung={item}
                 onPress={() =>
                   this.props.navigation.navigate('LaborierungItemScreen', {

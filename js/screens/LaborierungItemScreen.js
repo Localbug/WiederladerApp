@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Dimensions, Image, ScrollView, StyleSheet, Text } from 'react-native';
 
+//Detailansicht der ausgewählten Laborierung
 export default class LaborierungItemScreen extends Component {
   static navigationOptions = ({ navigation }) => {
     const laborierung = navigation.getParam('ausgewaehlteLaborierung');

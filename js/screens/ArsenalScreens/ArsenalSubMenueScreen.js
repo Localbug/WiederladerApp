@@ -25,13 +25,8 @@ export default class ArsenalItemScreen extends Component {
 
   componentDidMount() {
     const ausgewaehltesArsenalMenue = this.props.navigation.getParam('ausgewaehltesArsenalMenue');
-    //db.loescheTabelle('geschosse');
-    //db.InitialisiereDatenbak(); //Datenbanktabelle anlegen + Testdaten erzeugen
-
-    //In State sollen Benutzereingaben des Formulars gespeichert und hier in der Datenbank gespeichert werden
-
-
-    //db.ladeDaten('geschosse', ergebnis => this.setState({data: ergebnis,  isLoading: false }));
+    
+    //Frage: Warum kann ich lediglich tabelle 'geschosse' aus der Datenbank laden. Aufruf aller weiteren Tabellen liefert ein leeres Ergebnis?
     console.log("Lade DB-Daten für Menue: "+ausgewaehltesArsenalMenue.menueTitel)
     switch(ausgewaehltesArsenalMenue.menueTitel){
       case "Geschosse":

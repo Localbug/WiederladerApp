@@ -26,6 +26,11 @@ function erzeugeTabellen() {
             'create table if not exists pulver (id integer primary key not null, datensatztyp text, bezeichnung text, notizen text, preis real, bild blob);'
         );
         console.log("Tabelle pulver erzeugt");
+
+        tx.executeSql(
+          'create table if not exists laborierungen (id integer primary key not null, datensatztyp text, bezeichnung text, geschossID Integer, huelseID Integer, zuenderID Integer, pulverID Integer, beschichtungID Integer, oal real, notizen text, preis real, bild blob);'
+      );
+      console.log("Tabelle laborierung erzeugt");
     });
 
 } 
@@ -105,6 +110,34 @@ function testDatenInDBErzeugen() {
       bild: { uri: "https://png.pngtree.com/svg/20161205/PulverBild.png" }
     }
   ];
+  laborierungTestdaten = [
+    {
+      datensatztyp: "Laborierung",
+      bezeichnung: "Match-Patronen",
+      geschossID: 1,
+      huelseID: 1,
+      zuenderID: 1,
+      pulverID: 1,
+      beschichtungID: 1,
+      oal: "73,1",
+      notizen: "wird schnell heiss",
+      preis: "1,22",
+      bild: "http://icons.iconarchive.com/icons/icons8/windows-8/256/Military-Ammo-Tin-icon.png"
+    },
+    {
+      datensatztyp: "Laborierung",
+      bezeichnung: "Versuchslaborierung1",
+      geschossID: 1,
+      huelseID: 1,
+      zuenderID: 1,
+      pulverID: 1,
+      beschichtungID: 1,
+      oal: "73,1",
+      notizen: "versuch mit pressladung",
+      preis: "0,71",
+      bild: { uri: "http://icons.iconarchive.com/icons/icons8/windows-8/256/Military-Ammo-Tin-icon.png" }
+    }
+  ];
 
   for (var i = 0; i < geschossTestdaten.length; i++) {
     speichereDatensatz(geschossTestdaten[i]);
@@ -114,6 +147,9 @@ function testDatenInDBErzeugen() {
   }
   for (var i = 0; i < pulverTestdaten.length; i++) {
     speichereDatensatz(pulverTestdaten[i]);
+  }
+  for (var i = 0; i < laborierungTestdaten.length; i++) {
+    speichereDatensatz(laborierungTestdaten[i]);
   }
 
 }
@@ -141,6 +177,11 @@ function speichereDatensatz(datenObject) {
                     tx.executeSql('insert into pulver (datensatztyp, bezeichnung, notizen, preis, bild) values (?, ?, ?, ?, ?, ?, ?)', 
                     [datenObject.datensatztyp, datenObject.bezeichnung, datenObject.notizen, datenObject.preis, datenObject.bild] );
                     console.log('Erzeuge Pulver DB Eintrag: '+datenObject.datensatztyp +' - '+datenObject.bezeichnung+' - ' +datenObject.notizen+' - '+datenObject.preis+' - '+datenObject.bild);
+                    break;
+                case 'Laborierung':
+                    tx.executeSql('insert into pulver (datensatztyp, bezeichnung, geschossID, huelseID, zuenderID, pulverID, beschichtungID, notizen, preis, bild) values (?, ?, ?, ?, ?, ?, ?)', 
+                    [datenObject.datensatztyp, datenObject.bezeichnung, datenObject.geschossID, datenObject.huelseID, datenObject.zuenderID, datenObject.pulverID, datenObject.beschichtungID, datenObject.notizen, datenObject.preis, datenObject.bild] );
+                    console.log('Erzeuge Laborierung DB Eintrag: '+datenObject.datensatztyp +' - '+datenObject.bezeichnung+' - '+datenObject.geschossID+' - '+datenObject.huelseID+' - '+datenObject.beschichtungID+' - '+datenObject.pulverID+' - '+datenObject.beschichtungID+' - '+datenObject.notizen+' - '+datenObject.preis+' - '+datenObject.bild);
                     break;
                 default:
                     console.log("Fehler in DataContext - Funktion speichere! Kein Case zu Tabellenname: "+datenObject.datensatztyp +' gefunden');
@@ -200,6 +241,7 @@ export default class DataContext {
     loescheTabelle('geschosse');
     loescheTabelle('huelsen');
     loescheTabelle('pulver');
+    loescheTabelle('laborierungen');
     erzeugeTabellen();
     testDatenInDBErzeugen();
   }
@@ -224,4 +266,39 @@ export default class DataContext {
     //TODO: gegen SQLInjection sichern
     return ladeDBdaten(Tabellenname, callback);
   }
+
+  ladeMOCKLaborierungsDaten(callback) {
+      var laborierungTestdaten = [
+      {
+        datensatztyp: "Laborierung",
+        bezeichnung: "Match-Patronen",
+        geschossID: 1,
+        huelseID: 1,
+        zuenderID: 1,
+        pulverID: 1,
+        beschichtungID: 1,
+        oal: "73,1",
+        notizen: "wird schnell heiss",
+        preis: "1,22",
+        bild: "http://icons.iconarchive.com/icons/icons8/windows-8/256/Military-Ammo-Tin-icon.png"
+      },
+      {
+        datensatztyp: "Laborierung",
+        bezeichnung: "Versuchslaborierung1",
+        geschossID: 1,
+        huelseID: 1,
+        zuenderID: 1,
+        pulverID: 1,
+        beschichtungID: 1,
+        oal: "73,1",
+        notizen: "versuch mit pressladung",
+        preis: "0,71",
+        bild: { uri: "http://icons.iconarchive.com/icons/icons8/windows-8/256/Military-Ammo-Tin-icon.png" }
+      }
+    ];
+    return callback(laborierungTestdaten);
+  }
+
+
+
 }

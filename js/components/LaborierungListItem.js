@@ -1,6 +1,7 @@
 import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
+//Laborierung Kurzansicht für ListenView
 export default function(props) {
   const { ausgewaehlteLaborierung, onPress } = props;
   return (
@@ -8,13 +9,14 @@ export default function(props) {
       <View style={styles.container}>
         <Image
           style={styles.image}
-          source={{ uri: ausgewaehlteLaborierung.picture.thumbnail }}
+          //source={{ uri: ausgewaehlteLaborierung.picture.thumbnail }}
+          source={{ uri: "http://icons.iconarchive.com/icons/icons8/windows-8/256/Military-Ammo-Tin-icon.png" }}
         />
         <View style={styles.info}>
           <Text style={styles.text}>
-            {ausgewaehlteLaborierung.name.first} {ausgewaehlteLaborierung.name.last}
+            Variable1
           </Text>
-          <Text style={styles.smallText}>{ausgewaehlteLaborierung.email}</Text>
+          <Text style={styles.smallText}> Variable2 </Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -29,7 +31,7 @@ const styles = StyleSheet.create({
   image: {
     width: 80,
     height: 80,
-    borderRadius: 40,
+    borderRadius: 60,
     marginRight: 10
   },
   info: {
