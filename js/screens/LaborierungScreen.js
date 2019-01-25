@@ -17,6 +17,37 @@ export default class LaborierungScreen extends Component {
 
   state = { data: [], isLoading: true };
 
+
+   laborierungTestdaten = [
+    {
+      datensatztyp: "Laborierung",
+      bezeichnung: "Match-Patronen",
+      geschossID: 1,
+      huelseID: 1,
+      zuenderID: 1,
+      pulverID: 1,
+      beschichtungID: 1,
+      oal: "73,1",
+      notizen: "wird schnell heiss",
+      preis: "1,22",
+      bild: "http://icons.iconarchive.com/icons/icons8/windows-8/256/Military-Ammo-Tin-icon.png"
+    },
+    {
+      datensatztyp: "Laborierung",
+      bezeichnung: "Versuchslaborierung1",
+      geschossID: 1,
+      huelseID: 1,
+      zuenderID: 1,
+      pulverID: 1,
+      beschichtungID: 1,
+      oal: "73,1",
+      notizen: "versuch mit pressladung",
+      preis: "0,71",
+      bild: { uri: "http://icons.iconarchive.com/icons/icons8/windows-8/256/Military-Ammo-Tin-icon.png" }
+    }
+  ];
+
+
  _ladeLaborierungDatenAusDB = async () => {
   try {
     //Frage: Warum kann ich tabelle laborierung nicht genau so laden wie tabelle geschosse in ArsenalSubMenueScreen?
@@ -45,6 +76,7 @@ _ladeLaborierungDatenAusDB_MOCK(){
 
 
 
+
   _refresh = () => {
     this.setState({ isLoading: true });
     this._ladeLaborierungDatenAusDB();
@@ -66,6 +98,8 @@ _ladeLaborierungDatenAusDB_MOCK(){
       );
     return (
 
+
+
       <View style={styles.container}>
         <View style= {{position: 'absolute', top:30, right:5}}>
           <Button
@@ -76,6 +110,9 @@ _ladeLaborierungDatenAusDB_MOCK(){
                   })}
           />
         </View>
+
+
+
 
         <View style= {{position: 'absolute', top:100}}>
           <FlatList

@@ -26,7 +26,7 @@ const ArsenalStack = createStackNavigator(
 );
 
 const LaborierungsStack = createStackNavigator(
-  { LaborierungScreen, LaborierungItemScreen, LaborierungHinzufügenScreen},
+  { LaborierungScreen, LaborierungItemScreen, LaborierungHinzufügenScreen, SchießstandScreen},
   {
     defaultNavigationOptions: {
       headerStyle: { backgroundColor: 'aliceblue' }

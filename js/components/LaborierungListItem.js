@@ -4,6 +4,7 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 //Laborierung Kurzansicht für ListenView
 export default function(props) {
   const { ausgewaehlteLaborierung, onPress } = props;
+  //console.log("LaborierenListe läd Datensatz: "+JSON.stringify(ausgewaehlteLaborierung));
   return (
     <TouchableOpacity onPress={onPress}>
       <View style={styles.container}>
@@ -14,9 +15,9 @@ export default function(props) {
         />
         <View style={styles.info}>
           <Text style={styles.text}>
-            Variable1
+            {ausgewaehlteLaborierung.bezeichnung}
           </Text>
-          <Text style={styles.smallText}> Variable2 </Text>
+          <Text style={styles.smallText}> {ausgewaehlteLaborierung.geschoss.bezeichnung} </Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -31,12 +32,13 @@ const styles = StyleSheet.create({
   image: {
     width: 80,
     height: 80,
-    borderRadius: 60,
+    borderRadius: 20,
     marginRight: 10
   },
   info: {
     flexDirection: 'column',
-    justifyContent: 'space-evenly'
+    //justifyContent: 'space-evenly'
+    justifyContent: 'flex-start'
   },
   text: {
     fontSize: 20

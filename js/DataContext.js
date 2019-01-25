@@ -268,15 +268,44 @@ export default class DataContext {
   }
 
   ladeMOCKLaborierungsDaten(callback) {
+
+      geschoss1 = new Object();
+      geschoss1.bezeichnung = "Sierra Match King 168er";
+      geschoss1.kaliber = "308WIN";
+      geschoss1.gewicht = "168";
+
+      geschoss2 = new Object();
+      geschoss2.bezeichnung = "Lapua Scenar L";
+      geschoss2.kaliber = "308WIN";
+      geschoss1.gewicht = "155";
+
+      huelse = new Object();
+      huelse.bezeichnung = "Lapua2019";
+      huelse.laenge = "50,8";
+      huelse.anzahlWiedergeladen = "3";
+
+      pulver = new Object();
+      pulver.bezeichnung = "VV N140";
+      pulver.gewicht = "42";
+
+      zuender = new Object();
+      zuender.bezeichnung = "CCI BR2";
+
+      beschichtung = new Object();
+      beschichtung.bezeichnung = "Moly";
+      beschichtung.dauer = "2";
+
+
       var laborierungTestdaten = [
       {
         datensatztyp: "Laborierung",
         bezeichnung: "Match-Patronen",
-        geschossID: 1,
-        huelseID: 1,
-        zuenderID: 1,
-        pulverID: 1,
-        beschichtungID: 1,
+        //geschossID: {name: "Geschossname", kaliber: "308"},
+        geschoss: geschoss1,
+        huelse: huelse,
+        zuender: zuender,
+        pulver: pulver,
+        beschichtung: beschichtung,
         oal: "73,1",
         notizen: "wird schnell heiss",
         preis: "1,22",
@@ -285,11 +314,11 @@ export default class DataContext {
       {
         datensatztyp: "Laborierung",
         bezeichnung: "Versuchslaborierung1",
-        geschossID: 1,
-        huelseID: 1,
-        zuenderID: 1,
-        pulverID: 1,
-        beschichtungID: 1,
+        geschoss: geschoss2,
+        huelse: huelse,
+        zuender: zuender,
+        pulver: pulver,
+        beschichtung: beschichtung,
         oal: "73,1",
         notizen: "versuch mit pressladung",
         preis: "0,71",
