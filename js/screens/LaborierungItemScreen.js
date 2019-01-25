@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Dimensions, Image, ScrollView, View, Button, StyleSheet, Text } from 'react-native';
+import { Dimensions, Image, ScrollView, View, Button, StyleSheet, Text, CheckBox } from 'react-native';
+import DBContext from '../DataContext';
 
 //Detailansicht der ausgewählten Laborierung
 export default class LaborierungItemScreen extends Component {
@@ -11,7 +12,12 @@ export default class LaborierungItemScreen extends Component {
   };
 
   LaborierungLoeschen(laborierungsbezeichnung){
-    //TODO: Laborierung aus DB löschen
+    //TODO: Laborierung Löschen funktioniert nicht!
+
+    db = new DBContext();
+    db.loescheDatensatz("laborierungen", laborierungsbezeichnung);
+    
+
   }
 
 
@@ -23,6 +29,19 @@ export default class LaborierungItemScreen extends Component {
         contentContainerStyle={styles.container}
       >
         <Image style={styles.image} source={{ uri: "http://icons.iconarchive.com/icons/icons8/windows-8/256/Military-Ammo-Tin-icon.png" }} />
+
+
+        <View style={{ flexDirection: 'row' }}>
+          <CheckBox
+            value={laborierung.fertiggestellt}
+            disabled={true}
+            //onValueChange={() => this.setState({ checked: !this.state.checked })}
+            //onValueChange={alert("Checkbox geändert")}
+          />
+          <Text style={{marginTop: 5}}> Laborierung fertiggestellt</Text>
+        </View>
+    
+
         <Text>Laborierung: {laborierung.bezeichnung}</Text>
         <Text>Kalieber: {laborierung.geschoss.kaliber}</Text>
 
@@ -53,21 +72,28 @@ export default class LaborierungItemScreen extends Component {
          <View style= {{position: 'absolute', top:42, right:5}}>
           <Button
             title= "Laborierung löschen"
-            onPress={(item) =>{
-                  LaborierungLoeschen(laborierung.bezeichnung);
+            onPress={() =>{
+                  this.LaborierungLoeschen(laborierung.bezeichnung);
                   this.props.navigation.navigate('LaborieungScreen')
             }}
           />
         </View>
 
 
-        <View style= {{position: 'absolute', top:2, right:5}}>
+        <View style= {{position: 'absolute', top:2, right:5}}> 
           <Button
             title= "Resultate eingeben     "
-            onPress={() =>
-              this.props.navigation.navigate('Schießstandscreen', {
-                    ausgewaehlteLaborierung: laborierung.bezeichnung
-              })}
+            onPress={() =>{
+
+                alert("Damit wurde die Laborierung auf Status: 'Fertiggestellt' aktualisiert");
+                //TODO: Fertiggstellt Updaten
+
+                this.props.navigation.navigate('Schießstandscreen', {
+                      ausgewaehlteLaborierung: laborierung.bezeichnung
+
+                })
+              }
+            }
           />
         </View>
 

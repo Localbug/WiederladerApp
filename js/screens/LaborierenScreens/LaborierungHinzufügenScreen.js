@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Button, TextInput, TouchableOpacity, ScrollView, StyleSheet, Text, View } from 'react-native';
+import {Button, TextInput, TouchableOpacity, ScrollView, StyleSheet, Text, CheckBox, View } from 'react-native';
 import DBContext from '../../../js/DataContext';
 
 
@@ -29,7 +29,7 @@ export default class LaborierungHinzufuegenScreen extends Component {
   state = {
     ausgewaehltesArsenalMenue: ({ navigation }) => {navigation.getParam('ausgewaehltesArsenalMenue')},
     laborierungBezeichnung: '', geschossDatensatz: '', huelsenDatensatz: '', pulverDatensatz: '', zuenderDatensatz: '',
-    beschichtungDatensatz: '', oAL: '', notizen: ''
+    beschichtungDatensatz: '', oAL: '', notizen: '', fertiggestellt: false
   }
 
 
@@ -119,6 +119,18 @@ export default class LaborierungHinzufuegenScreen extends Component {
                 autoCapitalize = "none"
                 onChangeText = {this.handleLaborierungNotizen}/>
 
+              
+              <View style={{ flexDirection: 'row', backgroundColor: '#7a42f4', left: 15 }}>
+                <CheckBox
+                  value={this.state.fertiggestellt}
+                  disabled={false}
+                  //onValueChange={() => this.setState({ checked: !this.state.checked })}
+                  //onValueChange={alert("Checkbox geändert")}
+                  onValueChange={() => this.setState({ fertiggestellt: !this.state.fertiggestellt })}
+                />
+                <Text style={{marginTop: 5}}> Laborierung fertiggestellt</Text>
+              </View>
+
               <TouchableOpacity
                 style = {styles.submitButton}
                 onPress={(item) =>{
@@ -129,6 +141,7 @@ export default class LaborierungHinzufuegenScreen extends Component {
                   laborierungDatensatz.gewicht = this.state.geschossGewicht;
                   laborierungDatensatz.bc = this.state.geschossBc;
                   laborierungDatensatz.preis = this.state.geschossPreis;
+                  laborierungDatensatz.fertiggestellt = this.state.fertiggestellt;
                   laborierungDatensatz.bild = {uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTelUVBNfFUlKOJ24E8_kO_dWNuHAUoAcV_VscC6OwBGMdSmWM4'};
                   //datenInDBSpeichern("geschosse", geschossDatensatz);
                   DatenInDBSpeichern(laborierungDatensatz);
