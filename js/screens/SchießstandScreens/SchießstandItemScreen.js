@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Dimensions, Image, ScrollView, View, Button, StyleSheet, Text, FormInput, TextInput } from 'react-native';
 import NumericInput from 'react-native-numeric-input'
-import ScrollPicker from 'react-native-wheel-scroll-picker';
 import DBContext from '../../DataContext';
 
 
@@ -19,6 +18,14 @@ export default class SchießstandItemScreen extends Component {
 
     db = new DBContext();
     db.loescheDatensatz("laborierungen", laborierungsbezeichnung);
+  }
+
+  erzeugeArrayMitScrollRange(){
+    let dataSource = [];
+    for (var i = 0; i <= 500; i++) {
+      dataSource.push(i);
+    }
+    return dataSource;
   }
 
 
@@ -63,30 +70,6 @@ export default class SchießstandItemScreen extends Component {
             rightButtonBackgroundColor='#EA3788' 
             leftButtonBackgroundColor='#E56B70'/>
 
-        <ScrollPicker
-          dataSource={[
-              'a',
-              'b',
-              'c',
-              'd',
-          ]}
-          selectedIndex={1}
-          renderItem={(data, index, isSelected) => {
-              //
-          }}
-          onValueChange={(data, selectedIndex) => {
-              //
-          }}
-          wrapperHeight={180}
-          wrapperWidth={150}
-          wrapperBackground={'#FFFFFF'}
-          itemHeight={60}
-          highlightColor={'#d8d8d8'}
-          highlightBorderWidth={2}
-          activeItemColor={'#222121'}
-          itemColor={'#B4B4B4'}
-        />
-
         <View style={styles.textAreaContainer} >
             <Text>Schießstandnotizen:</Text>
             <TextInput
@@ -99,7 +82,6 @@ export default class SchießstandItemScreen extends Component {
             />
         </View>
  
-
         <View
           style={{
             borderBottomColor: 'black',
