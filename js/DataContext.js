@@ -376,6 +376,34 @@ export default class DataContext {
       preis: "0,45",
       fertiggestellt: true,
       bild: { uri: "http://icons.iconarchive.com/icons/icons8/windows-8/256/Military-Ammo-Tin-icon.png" }
+    },
+    {
+      datensatztyp: "Laborierung",
+      bezeichnung: "Hornady Fertigkeit",
+      geschoss: geschoss2,
+      huelse: huelse,
+      zuender: zuender,
+      pulver: pulver,
+      beschichtung: beschichtung,
+      oal: "72,0",
+      notizen: "günstiger Preis",
+      preis: "0,75",
+      fertiggestellt: true,
+      bild: { uri: "http://icons.iconarchive.com/icons/icons8/windows-8/256/Military-Ammo-Tin-icon.png" }
+    },
+    {
+      datensatztyp: "Laborierung",
+      bezeichnung: "Match 300m",
+      geschoss: geschoss2,
+      huelse: huelse,
+      zuender: zuender,
+      pulver: pulver,
+      beschichtung: beschichtung,
+      oal: "73,0",
+      notizen: "stärker geladen",
+      preis: "0,75",
+      fertiggestellt: true,
+      bild: { uri: "http://icons.iconarchive.com/icons/icons8/windows-8/256/Military-Ammo-Tin-icon.png" }
     }
   ];
   return callback(laborierungTestdaten);

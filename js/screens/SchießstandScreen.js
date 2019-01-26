@@ -6,6 +6,7 @@ import {
   Text,
   Button,
   ScrollView,
+  TextInput,
   View
 } from 'react-native';
 
@@ -26,7 +27,7 @@ import DBContext from '../DataContext';
 export default class SchießstandScreen extends Component {
   static navigationOptions = { header: null };
 
-  state = { data: [], isLoading: true };
+  state = { data: [], isLoading: true, temperatur: "", wind: "" };
 
 
  _ladeFertigeLaborierungenDatenAusDB = async () => {
@@ -77,12 +78,20 @@ _ladeFertigeLaborierungenDatenAusDB_MOCK(){
 
 
 
-      let dpData = [{
-        value: 'Banana',
+      let dpSchießstand = [{
+        value: 'Schießstand1',
       }, {
-        value: 'Mango',
+        value: 'Schießstand2',
       }, {
-        value: 'Pear',
+        value: 'Schießstand3',
+      }];
+
+      let dpWaffe = [{
+        value: 'Waffe1',
+      }, {
+        value: 'Waffe2',
+      }, {
+        value: 'Waffe3',
       }];
 
 
@@ -91,44 +100,63 @@ _ladeFertigeLaborierungenDatenAusDB_MOCK(){
     return (
 
       <View style={styles.container}>
-        <View style= {{position: 'absolute', top:30, right:5}}>
-          <Button
-            title= "neue erstellen"
-            onPress={() =>
-                  this.props.navigation.navigate('LaborierungHinzufügenScreen', {
-                    //ausgewaehltesArsenalMenue: ausgewaehltesArsenalMenue,
-                  })}
-          />
-        </View>
-
-        <Dropdown
-          label='Schießstand'
-          data={dpData}
-        />
-
-        <View style= {{position: 'absolute', top:100}}>
-         <Text>Hier in Schießstand</Text>
-          <FlatList
-            data={this.state.data}
-            keyExtractor={item => item.bezeichnung} //item.email
-            renderItem={({ item }) => (
-              <LaborierungListItem 
-                ausgewaehlteLaborierung={item}
-                onPress={() =>
-                  this.props.navigation.navigate('LaborierungItemScreen', {
-                    ausgewaehlteLaborierung: item
-                  })
-                }
-              />
-            )}
-            onRefresh={this._refresh}
-            refreshing={this.state.isLoading}
-            ItemSeparatorComponent={() => <View style={styles.listSeparator} />}
-            ListEmptyComponent={() => (
-              <Text style={styles.listEmpty}>Keine Daten geladen</Text>
-            )}
-          />
-        </View>
+          <View style= {{position: 'absolute', top:30, right:5}}>
+            <Button
+              title= "neue erstellen"
+              onPress={() =>
+                    this.props.navigation.navigate('LaborierungHinzufügenScreen', {
+                      //ausgewaehltesArsenalMenue: ausgewaehltesArsenalMenue,
+                    })}
+            />
+          </View>
+          <View style= {{paddingTop: 40}}>
+            <View style= {{left: 15}}>
+                <Dropdown
+                  label='Schießstand auswählen'
+                  data={dpSchießstand}
+                />
+              
+                <Dropdown
+                  label='Waffe auswählen'
+                  data={dpWaffe}
+                />
+            </View>
+            <TextInput style = {styles.input}
+                    underlineColorAndroid = "transparent"
+                    placeholder = "Wetter: Temperatur in C"
+                    placeholderTextColor = "#9E9E9E"
+                    autoCapitalize = "none"
+                    onChangeText = {(text) => {this.setState({ temperatur: text })}}/>
+            <TextInput style = {styles.input}
+                    underlineColorAndroid = "transparent"
+                    placeholder = "Wetter: -Wind Notiz- "
+                    placeholderTextColor = "#9E9E9E"
+                    autoCapitalize = "none"
+                    onChangeText = {(text) => {this.setState({ wind: text })}}/>
+          </View>
+          <ScrollView style= {{position: 'absolute', top:280}}>
+            <Text style={{left: 15}}>Bitte wähle eine deiner fertigen Laborierungen aus:</Text>
+            <FlatList
+              data={this.state.data}
+              keyExtractor={item => item.bezeichnung} //item.email
+              renderItem={({ item }) => (
+                <LaborierungListItem 
+                  ausgewaehlteLaborierung={item}
+                  onPress={() =>
+                    this.props.navigation.navigate('LaborierungItemScreen', {
+                      ausgewaehlteLaborierung: item
+                    })
+                  }
+                />
+              )}
+              onRefresh={this._refresh}
+              refreshing={this.state.isLoading}
+              ItemSeparatorComponent={() => <View style={styles.listSeparator} />}
+              ListEmptyComponent={() => (
+                <Text style={styles.listEmpty}>Keine Daten geladen</Text>
+              )}
+            />
+          </ScrollView>
       </View>
     );
   }
@@ -136,10 +164,10 @@ _ladeFertigeLaborierungenDatenAusDB_MOCK(){
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
+    //flex: 1,
+    //justifyContent: 'center',
     backgroundColor: '#fff',
-    paddingTop: 30
+    //paddingTop: 30
   },
   listSeparator: {
     height: StyleSheet.hairlineWidth,
@@ -150,38 +178,14 @@ const styles = StyleSheet.create({
     paddingTop: 100,
     fontSize: 32,
     textAlign: 'center'
-  }
+  },
+  input: {
+    margin: 5,
+    height: 30,
+    borderColor: '#000',
+    borderWidth: 1,
+    paddingLeft: 15
+  },
 });
 
 
-/*
-
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <Select
-            width={250}
-            ref="SELECT1"
-            optionListRef={this._getOptionList.bind(this)}
-            defaultValue="Select a Province in Canada ..."
-            onSelect={this._canada.bind(this)}>
-            <Option>Alberta</Option>
-            <Option>British Columbia</Option>
-            <Option>Manitoba</Option>
-            <Option>New Brunswick</Option>
-            <Option>Newfoundland and Labrador</Option>
-            <Option>Northwest Territories</Option>
-            <Option>Nova Scotia</Option>
-            <Option>Nunavut</Option>
-            <Option>Ontario</Option>
-            <Option>Prince Edward Island</Option>
-            <Option>Quebec</Option>
-            <Option>Saskatchewan</Option>
-            <Option>Yukon</Option>
-          </Select>
-
-          <Text>Selected provicne of Canada: {this.state.canada}</Text>
-          
-          <OptionList ref="OPTIONLIST"/>
-      </View>
-
-
-*/
