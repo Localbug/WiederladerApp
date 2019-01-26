@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { Dimensions, Image, ScrollView, View, Button, StyleSheet, Text, FormInput, TextInput, TouchableOpacity, Icon, Ionicons, MaterialCommunityIcons } from 'react-native';
+import { Dimensions, Image, ScrollView, View, Button, StyleSheet, Text, FormInput, TextInput, TouchableOpacity } from 'react-native';
 import NumericInput from 'react-native-numeric-input'
-import { Camera, Permissions } from 'expo';
 import DBContext from '../../DataContext';
 
 
@@ -13,30 +12,6 @@ export default class SchießstandItemScreen extends Component {
       title: "Ergenisse Eintragen:"//title: `${laborierung.bezeichnung} ${":"}`
     };
   };
-
-  state = {
-    hasCameraPermission: null,
-    type: Camera.Constants.Type.back,
-  };
-
-  //Kamera Freigabe
-  async componentDidMount() {
-    const { status } = await Permissions.askAsync(Permissions.CAMERA);
-    this.setState({ hasCameraPermission: status === 'granted' });
-  }
-
-  async snapPhoto() {       
-    console.log('Button Pressed');
-    if (this.camera) {
-       console.log('Taking photo');
-       const options = { quality: 1, base64: true, fixOrientation: true, 
-       exif: true};
-       await this.camera.takePictureAsync(options).then(photo => {
-          photo.exif.Orientation = 1;            
-           console.log(photo);            
-           });     
-     }
-    }
 
   LaborierungLoeschen(laborierungsbezeichnung){
     //TODO: Laborierung Löschen funktioniert nicht!
@@ -53,57 +28,6 @@ export default class SchießstandItemScreen extends Component {
     return dataSource;
   }
 
-  render() {
-    const { hasCameraPermission } = this.state;
-    if (hasCameraPermission === null) {
-      return <View />;
-    } else if (hasCameraPermission === false) {
-      return <Text>No access to camera</Text>;
-    } else {
-      return (
-        <View style={{ flex: 1 }}>
-          <Camera style={{ flex: 1 }}
-          ref={ (ref) => {this.camera = ref} }
-          type={this.state.type}>
-            <View
-              style={{
-                flex: 1,
-                backgroundColor: 'transparent',
-                flexDirection: 'row',
-              }}>
-              <TouchableOpacity
-                style={{
-                  flex: 0.1,
-                  alignSelf: 'flex-end',
-                  alignItems: 'center',
-                }}
-                onPress={() => {
-                  this.setState({
-                    type: this.state.type === Camera.Constants.Type.back
-                      ? Camera.Constants.Type.front
-                      : Camera.Constants.Type.back,
-                  });
-                }}>
-                <Text
-                  style={{ fontSize: 18, marginBottom: 10, color: 'white' }}>
-                  {' '}Flip{' '}
-                </Text>
-              </TouchableOpacity>
-            </View>
-
-            <TouchableOpacity style={styles.captureButton} onPress={this.snapPhoto.bind(this)}>
-                <Image style={{width: 100, height: 100}} source={require('../../../assets/takePicIcon.png')}          
-                />
-            </TouchableOpacity>
-
-
-          </Camera>
-        </View>
-      );
-    }
-  }
-
-/*
   render() {
     const laborierung = this.props.navigation.getParam('ausgewaehlteLaborierung');
 
@@ -129,21 +53,34 @@ export default class SchießstandItemScreen extends Component {
         <Text>Zünder:{laborierung.zuender.bezeichnung}</Text>
 
         <Text>Streukreis in mm:</Text>
-        <NumericInput 
-            //value={this.state.value} 
-            initValue = {20.0}
-            //onChange={value => this.setState({value})} 
-            onChange={value => console.log(value)} 
-            totalWidth={240} 
-            totalHeight={50} 
-            iconSize={25}
-            step={0.5}
-            valueType='real'
-            rounded 
-            textColor='#B0228C' 
-            iconStyle={{ color: 'white' }} 
-            rightButtonBackgroundColor='#EA3788' 
-            leftButtonBackgroundColor='#E56B70'/>
+        <View style={{
+          flex: 1,
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+        }}>
+            <NumericInput 
+                //value={this.state.value} 
+                initValue = {20.0}
+                //onChange={value => this.setState({value})} 
+                onChange={value => console.log(value)} 
+                totalWidth={220} 
+                totalHeight={70} 
+                iconSize={25}
+                step={0.5}
+                valueType='real'
+                rounded 
+                textColor='#B0228C' 
+                iconStyle={{ color: 'white' }} 
+                rightButtonBackgroundColor='#EA3788' 
+                leftButtonBackgroundColor='#E56B70'/>
+
+            <TouchableOpacity style={{paddingLeft: 10}} 
+                onPress={() => this.props.navigation.navigate('TakePictureScreen', {})}>
+                <Text style={{fontSize: 10}}>Treffer aufnehmen:</Text>
+                <Image style={{width: 40, height: 40}} source={require('../../../assets/takePicIcon.png')}          
+                />
+            </TouchableOpacity>
+        </View>
 
         <View style={styles.textAreaContainer} >
             <Text>Schießstandnotizen:</Text>
@@ -156,52 +93,15 @@ export default class SchießstandItemScreen extends Component {
               multiline={true}
             />
         </View>
- 
 
+        <Text>Trefferbild:</Text>
+        <Image style={{width: 250, height: 250, alignSelf: 'center'}} source= {{uri: 'https://facebook.github.io/react-native/docs/assets/favicon.png'}}         
+            />
 
-
-        <View style={{ flex: 1 }}>
-          <Camera style={{ flex: 1 }} type={this.state.type}>
-            <View
-              style={{
-                flex: 1,
-                backgroundColor: 'transparent',
-                flexDirection: 'row',
-              }}>
-              <TouchableOpacity
-                style={{
-                  flex: 0.1,
-                  alignSelf: 'flex-end',
-                  alignItems: 'center',
-                }}
-                onPress={() => {
-                  this.setState({
-                    type: this.state.type === Camera.Constants.Type.back
-                      ? Camera.Constants.Type.front
-                      : Camera.Constants.Type.back,
-                  });
-                }}>
-                <Text
-                  style={{ fontSize: 18, marginBottom: 10, color: 'white' }}>
-                  {' '}Flip{' '}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </Camera>
-        </View>
-
-
-
-        <View
-          style={{
-            borderBottomColor: 'black',
-            borderBottomWidth: 1,
-          }}
-        />
       </ScrollView>
     );
   }
-*/
+
   newMethod() {
     return 'Schießstandscreen';
   }
