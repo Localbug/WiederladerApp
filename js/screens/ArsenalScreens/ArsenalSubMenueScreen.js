@@ -4,7 +4,7 @@
 import React, { Component } from 'react';
 import { ActivityIndicator, Button, FlatList, Dimensions, Image, ScrollView, View, StyleSheet, Text } from 'react-native';
 
-import ArsenalListItem from './ArsenalListItem';
+import ArsenalListItem from '../../components/ArsenalListItem';
 import DBContext from '../../DataContext';
 db = new DBContext();
 

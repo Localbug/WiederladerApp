@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Dimensions, Image, ScrollView, View, Button, StyleSheet, Text, CheckBox } from 'react-native';
-import DBContext from '../DataContext';
+import DBContext from '../../DataContext';
 
 //Detailansicht der ausgewählten Laborierung
 export default class LaborierungItemScreen extends Component {

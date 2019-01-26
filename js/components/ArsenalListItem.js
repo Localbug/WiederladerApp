@@ -15,7 +15,7 @@ export default function(props) {
               style={styles.image}
               //Frage: Wie kann ich ein Bild aus assert über den State setzen? Require kann keine Variablen übernehmen. Pfad muss wohl static sein
               //source={{ uri: 'https://image.freepik.com/freie-ikonen/benutzerprofil-bearbeiten-taste_318-32453.jpg'}}
-              source = { require('../../../assets/GeschossIcon.png')}
+              source = { require('../../assets/GeschossIcon.png')}
             />
             <View style={styles.info}>
               <Text style={styles.text}>
@@ -43,7 +43,7 @@ export default function(props) {
               style={styles.image}
               //Frage: Wie kann ich ein Bild aus assert über den State setzen? Require kann keine Variablen übernehmen. Pfad muss wohl static sein
               //source={{ uri: 'https://image.freepik.com/freie-ikonen/benutzerprofil-bearbeiten-taste_318-32453.jpg'}}
-              source = { require('../../../assets/HuelseIcon.png')}
+              source = { require('../../assets/HuelseIcon.png')}
             />
             <View style={styles.info}>
               <Text style={styles.text}>

@@ -8,8 +8,9 @@ import { Icon } from 'expo';
 
 import ArsenalScreen from './screens/ArsenalScreen';
 import LaborierungScreen from './screens/LaborierungScreen';
-import LaborierungItemScreen from './screens/LaborierungItemScreen';
+import LaborierungItemScreen from './screens/LaborierenScreens/LaborierungItemScreen';
 import SchießstandScreen from './screens/SchießstandScreen';
+import InfoScreen from './screens/InfoScreen';
 import ArsenalSubMenueScreen from './screens/ArsenalScreens/ArsenalSubMenueScreen';
 import ArsenalHinzufügenScreen from './screens/ArsenalScreens/ArsenalHinzufügenScreen';
 import LaborierungHinzufügenScreen from './screens/LaborierenScreens/LaborierungHinzufügenScreen';
@@ -27,6 +28,15 @@ const ArsenalStack = createStackNavigator(
 
 const LaborierungsStack = createStackNavigator(
   { LaborierungScreen, LaborierungItemScreen, LaborierungHinzufügenScreen, SchießstandScreen},
+  {
+    defaultNavigationOptions: {
+      headerStyle: { backgroundColor: 'aliceblue' }
+    }
+  }
+);
+
+const SchießstandStack = createStackNavigator(
+  { SchießstandScreen, LaborierungScreen, LaborierungItemScreen, LaborierungHinzufügenScreen, },
   {
     defaultNavigationOptions: {
       headerStyle: { backgroundColor: 'aliceblue' }
@@ -54,12 +64,21 @@ const TabNavigator = createBottomTabNavigator(
         )
       }
     },
-    TabRechts: {
-      screen: SchießstandScreen,
+    TabMitteRechts: {
+      screen: SchießstandStack,
       navigationOptions: {
         title: 'Schießstand',
         tabBarIcon: ({ tintColor }) => (
           <Icon.MaterialCommunityIcons name="target" size={24} color={tintColor} />
+        )
+      }
+    },
+    TabRechts: {
+      screen: InfoScreen,
+      navigationOptions: {
+        title: 'Schießstand',
+        tabBarIcon: ({ tintColor }) => (
+          <Icon.Feather name="info" size={24} color={tintColor} />
         )
       }
     }

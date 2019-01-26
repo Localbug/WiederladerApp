@@ -226,6 +226,21 @@ function ladeDBdaten(tabellenname, callback) {
 }
 
 
+function ladeFertigeLaborierungen(callback) {
+  console.log("DATA-Context: Lade Fertige Laborierungen aus DB");
+
+  database.transaction(tx => {
+    tx.executeSql("select * from laborierungen WHERE fertiggestellt = 1", [], (_, { rows }) => {
+      console.log(
+        "DataContext - Fertiger Laborierungsdatensatz aus Tabelle: "+
+          JSON.stringify(rows._array)
+      );
+      callback(rows._array);
+    });
+  });
+}
+
+
 function löscheZeile(tabellenname, bezeichnung) {
   console.log(
     "DataContext - Funktion löscheZeile: Es wird in Tabelle: " +
@@ -283,6 +298,91 @@ export default class DataContext {
     //TODO: gegen SQLInjection sichern
     return ladeDBdaten(Tabellenname, callback);
   }
+
+  ladeFertigeLaborierungen(callback) {
+    return ladeFertigeLaborierungen(callback);
+  }
+
+
+  ladeFertigeLaborierungen_Mock(callback) {
+
+    geschoss1 = new Object();
+    geschoss1.bezeichnung = "Sierra Match King 168er";
+    geschoss1.kaliber = "308WIN";
+    geschoss1.gewicht = "168";
+
+    geschoss2 = new Object();
+    geschoss2.bezeichnung = "Lapua Scenar L";
+    geschoss2.kaliber = "308WIN";
+    geschoss1.gewicht = "155";
+
+    huelse = new Object();
+    huelse.bezeichnung = "Lapua2019";
+    huelse.laenge = "50,8";
+    huelse.anzahlWiedergeladen = "3";
+
+    pulver = new Object();
+    pulver.bezeichnung = "VV N140";
+    pulver.gewicht = "42";
+
+    zuender = new Object();
+    zuender.bezeichnung = "CCI BR2";
+
+    beschichtung = new Object();
+    beschichtung.bezeichnung = "Moly";
+    beschichtung.dauer = "2";
+
+
+    var laborierungTestdaten = [
+    {
+      datensatztyp: "Laborierung",
+      bezeichnung: "Match-Patronen",
+      //geschossID: {name: "Geschossname", kaliber: "308"},
+      geschoss: geschoss1,
+      huelse: huelse,
+      zuender: zuender,
+      pulver: pulver,
+      beschichtung: beschichtung,
+      oal: "73,1",
+      notizen: "wird schnell heiss",
+      preis: "1,22",
+      fertiggestellt: true,
+      bild: "http://icons.iconarchive.com/icons/icons8/windows-8/256/Military-Ammo-Tin-icon.png"
+    },
+    {
+      datensatztyp: "Laborierung",
+      bezeichnung: "Hornady MatchKing HPBT",
+      geschoss: geschoss2,
+      huelse: huelse,
+      zuender: zuender,
+      pulver: pulver,
+      beschichtung: beschichtung,
+      oal: "73,1",
+      notizen: "versuch mit pressladung",
+      preis: "0,71",
+      fertiggestellt: true,
+      bild: { uri: "http://icons.iconarchive.com/icons/icons8/windows-8/256/Military-Ammo-Tin-icon.png" }
+    },
+    {
+      datensatztyp: "Laborierung",
+      bezeichnung: "Surplus Training",
+      geschoss: geschoss2,
+      huelse: huelse,
+      zuender: zuender,
+      pulver: pulver,
+      beschichtung: beschichtung,
+      oal: "72,0",
+      notizen: "günstiger Preis",
+      preis: "0,45",
+      fertiggestellt: true,
+      bild: { uri: "http://icons.iconarchive.com/icons/icons8/windows-8/256/Military-Ammo-Tin-icon.png" }
+    }
+  ];
+  return callback(laborierungTestdaten);
+}
+
+
+
 
   ladeMOCKLaborierungsDaten(callback) {
 
@@ -345,15 +445,15 @@ export default class DataContext {
       },
       {
         datensatztyp: "Laborierung",
-        bezeichnung: "Versuchslaborierung2",
+        bezeichnung: "Trainings Munition",
         geschoss: geschoss2,
         huelse: huelse,
         zuender: zuender,
         pulver: pulver,
         beschichtung: beschichtung,
-        oal: "73,1",
-        notizen: "weniger rückschlag",
-        preis: "0,71",
+        oal: "72,0",
+        notizen: "günstiger Preis",
+        preis: "0,49",
         fertiggestellt: false,
         bild: { uri: "http://icons.iconarchive.com/icons/icons8/windows-8/256/Military-Ammo-Tin-icon.png" }
       }
