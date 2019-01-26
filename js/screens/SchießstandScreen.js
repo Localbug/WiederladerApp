@@ -9,18 +9,7 @@ import {
   TextInput,
   View
 } from 'react-native';
-
 import { Dropdown } from 'react-native-material-dropdown';
-/*
-const DropDown = require('react-native-dropdown');
-const {
-  Select,
-  Option,
-  OptionList,
-  updatePosition
-} = DropDown;
-*/
-
 import LaborierungListItem from '../components/LaborierungListItem';
 import DBContext from '../DataContext';
 
@@ -30,30 +19,26 @@ export default class SchießstandScreen extends Component {
   state = { data: [], isLoading: true, temperatur: "", wind: "" };
 
 
- _ladeFertigeLaborierungenDatenAusDB = async () => {
-  try {
-    //Frage: Warum kann ich tabelle laborierung nicht genau so laden wie tabelle geschosse in ArsenalSubMenueScreen?
-    db = new DBContext();
-    db.ladeFertigeLaborierungen(ergebnis => this.setState({data: ergebnis,  isLoading: false }));
-    console.log('Fertige Laborierungen geladen und in State gesetzt: '+JSON.stringify(this.state.data));
-
-  } catch (error) {
-    console.log('Fehler - Laborierenscreen: Laborierungen konnten nicht geladen werden! ');
-    alert('Fehler: Keine laborierung DB Daten empfangen');
-    this.setState({ isLoading: false });
-  }
-};
-
-_ladeFertigeLaborierungenDatenAusDB_MOCK(){
-  db = new DBContext();
-  db.ladeFertigeLaborierungen_Mock(ergebnis => this.setState({data: ergebnis,  isLoading: false }));
+  _ladeFertigeLaborierungenDatenAusDB = async () => {
+    try {
+      //Frage: Warum kann ich tabelle laborierung nicht genau so laden wie tabelle geschosse in ArsenalSubMenueScreen?
+      db = new DBContext();
+      db.ladeFertigeLaborierungen(ergebnis => this.setState({data: ergebnis,  isLoading: false }));
+      console.log('Fertige Laborierungen geladen und in State gesetzt: '+JSON.stringify(this.state.data));
   
-  console.log('Fertige Laborierungen aus Mock geladen und in State gesetzt: '+JSON.stringify(this.state.data));
-};
-
-
-
-
+    } catch (error) {
+      console.log('Fehler - Laborierenscreen: Laborierungen konnten nicht geladen werden! ');
+      alert('Fehler: Keine laborierung DB Daten empfangen');
+      this.setState({ isLoading: false });
+    }
+  };
+  
+  _ladeFertigeLaborierungenDatenAusDB_MOCK(){
+    db = new DBContext();
+    db.ladeFertigeLaborierungen_Mock(ergebnis => this.setState({data: ergebnis,  isLoading: false }));
+    console.log('Fertige Laborierungen aus Mock geladen und in State gesetzt: '+JSON.stringify(this.state.data));
+  };
+  
 
   _refresh = () => {
     this.setState({ isLoading: true });
@@ -76,8 +61,6 @@ _ladeFertigeLaborierungenDatenAusDB_MOCK(){
         </View>
       );
 
-
-
       let dpSchießstand = [{
         value: 'Schießstand1',
       }, {
@@ -94,13 +77,10 @@ _ladeFertigeLaborierungenDatenAusDB_MOCK(){
         value: 'Waffe3',
       }];
 
-
-
-
     return (
-
       <View style={styles.container}>
-          <View style= {{position: 'absolute', top:30, right:5}}>
+
+        <View style= {{position: 'absolute', top:30, right:5}}>
             <Button
               title= "neue erstellen"
               onPress={() =>
@@ -109,7 +89,8 @@ _ladeFertigeLaborierungenDatenAusDB_MOCK(){
                     })}
             />
           </View>
-          <View style= {{paddingTop: 40}}>
+
+          <View style= {{paddingTop: 20}}>
             <View style= {{left: 15}}>
                 <Dropdown
                   label='Schießstand auswählen'
@@ -121,6 +102,7 @@ _ladeFertigeLaborierungenDatenAusDB_MOCK(){
                   data={dpWaffe}
                 />
             </View>
+
             <TextInput style = {styles.input}
                     underlineColorAndroid = "transparent"
                     placeholder = "Wetter: Temperatur in C"
@@ -134,8 +116,9 @@ _ladeFertigeLaborierungenDatenAusDB_MOCK(){
                     autoCapitalize = "none"
                     onChangeText = {(text) => {this.setState({ wind: text })}}/>
           </View>
+
           <ScrollView style= {{position: 'absolute', top:280}}>
-            <Text style={{left: 15}}>Bitte wähle eine deiner fertigen Laborierungen aus:</Text>
+            <Text style={{left: 15}}>Bitte wähle eine der fertigen Laborierungen aus:</Text>
             <FlatList
               data={this.state.data}
               keyExtractor={item => item.bezeichnung} //item.email
@@ -143,7 +126,7 @@ _ladeFertigeLaborierungenDatenAusDB_MOCK(){
                 <LaborierungListItem 
                   ausgewaehlteLaborierung={item}
                   onPress={() =>
-                    this.props.navigation.navigate('LaborierungItemScreen', {
+                    this.props.navigation.navigate('SchießstandItemScreen', {
                       ausgewaehlteLaborierung: item
                     })
                   }
@@ -164,10 +147,10 @@ _ladeFertigeLaborierungenDatenAusDB_MOCK(){
 
 const styles = StyleSheet.create({
   container: {
-    //flex: 1,
+    flex: 1,
     //justifyContent: 'center',
     backgroundColor: '#fff',
-    //paddingTop: 30
+    paddingTop: 30
   },
   listSeparator: {
     height: StyleSheet.hairlineWidth,
@@ -185,7 +168,5 @@ const styles = StyleSheet.create({
     borderColor: '#000',
     borderWidth: 1,
     paddingLeft: 15
-  },
+  }
 });
-
-

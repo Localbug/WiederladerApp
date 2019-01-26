@@ -10,7 +10,6 @@ export default function(props) {
       <View style={styles.container}>
         <Image
           style={styles.image}
-          //source={{ uri: ausgewaehlteLaborierung.picture.thumbnail }}
           source={{ uri: "http://icons.iconarchive.com/icons/icons8/windows-8/256/Military-Ammo-Tin-icon.png" }}
         />
         <View style={styles.info}>

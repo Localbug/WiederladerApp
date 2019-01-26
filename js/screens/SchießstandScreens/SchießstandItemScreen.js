@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
-import { Dimensions, Image, ScrollView, View, Button, StyleSheet, Text, CheckBox } from 'react-native';
+import { Dimensions, Image, ScrollView, View, Button, StyleSheet, Text, FormInput, TextInput } from 'react-native';
+import NumericInput from 'react-native-numeric-input'
+import ScrollPicker from 'react-native-wheel-scroll-picker';
 import DBContext from '../../DataContext';
 
+
 //Detailansicht der ausgewählten Laborierung
-export default class LaborierungItemScreen extends Component {
+export default class SchießstandItemScreen extends Component {
   static navigationOptions = ({ navigation }) => {
     const laborierung = navigation.getParam('ausgewaehlteLaborierung');
     return {
-      title: `${laborierung.bezeichnung} ${":"}`
+      title: "Ergenisse Eintragen:"//title: `${laborierung.bezeichnung} ${":"}`
     };
   };
 
@@ -16,32 +19,17 @@ export default class LaborierungItemScreen extends Component {
 
     db = new DBContext();
     db.loescheDatensatz("laborierungen", laborierungsbezeichnung);
-    
-
   }
 
 
   render() {
     const laborierung = this.props.navigation.getParam('ausgewaehlteLaborierung');
+
     return (
       <ScrollView
         style={styles.scrollview}
         contentContainerStyle={styles.container}
       >
-        <Image style={styles.image} source={{ uri: "http://icons.iconarchive.com/icons/icons8/windows-8/256/Military-Ammo-Tin-icon.png" }} />
-
-
-        <View style={{ flexDirection: 'row' }}>
-          <CheckBox
-            value={laborierung.fertiggestellt}
-            disabled={true}
-            //onValueChange={() => this.setState({ checked: !this.state.checked })}
-            //onValueChange={alert("Checkbox geändert")}
-          />
-          <Text style={{marginTop: 5}}> Laborierung fertiggestellt</Text>
-        </View>
-    
-
         <Text>Laborierung: {laborierung.bezeichnung}</Text>
         <Text>Kalieber: {laborierung.geschoss.kaliber}</Text>
 
@@ -58,43 +46,72 @@ export default class LaborierungItemScreen extends Component {
 
         <Text>Zünder:{laborierung.zuender.bezeichnung}</Text>
 
-        <Text>Notizen:{laborierung.notizen}</Text>
+        <Text>Streukreis in mm:</Text>
+        <NumericInput 
+            //value={this.state.value} 
+            initValue = {20.0}
+            //onChange={value => this.setState({value})} 
+            onChange={value => console.log(value)} 
+            totalWidth={240} 
+            totalHeight={50} 
+            iconSize={25}
+            step={0.5}
+            valueType='real'
+            rounded 
+            textColor='#B0228C' 
+            iconStyle={{ color: 'white' }} 
+            rightButtonBackgroundColor='#EA3788' 
+            leftButtonBackgroundColor='#E56B70'/>
+
+        <ScrollPicker
+          dataSource={[
+              'a',
+              'b',
+              'c',
+              'd',
+          ]}
+          selectedIndex={1}
+          renderItem={(data, index, isSelected) => {
+              //
+          }}
+          onValueChange={(data, selectedIndex) => {
+              //
+          }}
+          wrapperHeight={180}
+          wrapperWidth={150}
+          wrapperBackground={'#FFFFFF'}
+          itemHeight={60}
+          highlightColor={'#d8d8d8'}
+          highlightBorderWidth={2}
+          activeItemColor={'#222121'}
+          itemColor={'#B4B4B4'}
+        />
+
+        <View style={styles.textAreaContainer} >
+            <Text>Schießstandnotizen:</Text>
+            <TextInput
+              style={styles.textArea}
+              underlineColorAndroid="transparent"
+              placeholder= {laborierung.notizen}
+              placeholderTextColor="grey"
+              numberOfLines={5}
+              multiline={true}
+            />
+        </View>
+ 
+
         <View
           style={{
             borderBottomColor: 'black',
             borderBottomWidth: 1,
           }}
         />
-        <Text style= {{fontStyle: 'italic'}}>Tipp: Wähle die Laborierung im Schießstand-Tab, um einen Streukreis ermitteln zu können und ein Trefferbild aufzunehmen</Text>
-
-         <View style= {{position: 'absolute', top:42, right:5}}>
-          <Button
-            title= "Laborierung löschen"
-            onPress={() =>{
-                  this.LaborierungLoeschen(laborierung.bezeichnung);
-                  this.props.navigation.navigate('LaborieungScreen')
-            }}
-          />
-        </View>
-
-        <View style= {{position: 'absolute', top:2, right:5}}> 
-          <Button
-            title= "Resultate eingeben     "
-            onPress={() =>{
-
-                alert("Damit wurde die Laborierung auf Status: 'Fertiggestellt' aktualisiert");
-                //TODO: Fertiggstellt Updaten
-
-                this.props.navigation.navigate('Schießstandscreen', {
-                      ausgewaehlteLaborierung: laborierung.bezeichnung
-
-                })
-              }
-            }
-          />
-        </View>
       </ScrollView>
     );
+  }
+
+  newMethod() {
+    return 'Schießstandscreen';
   }
 }
 
@@ -122,5 +139,14 @@ const styles = StyleSheet.create({
     width: width,
     height: width,
     marginBottom: 20
+  },
+  textAreaContainer: {
+    borderColor: "grey",
+    borderWidth: 1,
+    padding: 5
+  },
+  textArea: {
+    height: 50,
+    //justifyContent: "flex-start"
   }
 });

@@ -82,8 +82,6 @@ _ladeLaborierungDatenAusDB_MOCK(){
         </View>
 
 
-
-
         <View style= {{position: 'absolute', top:100}}>
           <FlatList
             data={this.state.data}

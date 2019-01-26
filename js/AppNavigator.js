@@ -10,6 +10,7 @@ import ArsenalScreen from './screens/ArsenalScreen';
 import LaborierungScreen from './screens/LaborierungScreen';
 import LaborierungItemScreen from './screens/LaborierenScreens/LaborierungItemScreen';
 import SchießstandScreen from './screens/SchießstandScreen';
+import SchießstandItemScreen from './screens/SchießstandScreens/SchießstandItemScreen';
 import InfoScreen from './screens/InfoScreen';
 import ArsenalSubMenueScreen from './screens/ArsenalScreens/ArsenalSubMenueScreen';
 import ArsenalHinzufügenScreen from './screens/ArsenalScreens/ArsenalHinzufügenScreen';
@@ -36,7 +37,7 @@ const LaborierungsStack = createStackNavigator(
 );
 
 const SchießstandStack = createStackNavigator(
-  { SchießstandScreen, LaborierungScreen, LaborierungItemScreen, LaborierungHinzufügenScreen, },
+  { SchießstandScreen, SchießstandItemScreen, LaborierungScreen, LaborierungItemScreen, LaborierungHinzufügenScreen,  },
   {
     defaultNavigationOptions: {
       headerStyle: { backgroundColor: 'aliceblue' }
