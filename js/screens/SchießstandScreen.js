@@ -47,8 +47,8 @@ export default class SchießstandScreen extends Component {
   };
 
   componentDidMount() {
-    //this._ladeFertigeLaborierungenDatenAusDB();
-    this._ladeFertigeLaborierungenDatenAusDB_MOCK();
+    this._ladeFertigeLaborierungenDatenAusDB();
+    //this._ladeFertigeLaborierungenDatenAusDB_MOCK();
   }
 
   render() {

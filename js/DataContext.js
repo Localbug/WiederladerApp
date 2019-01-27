@@ -3,14 +3,15 @@ import { SQLite } from "expo";
 const database = SQLite.openDatabase("testdb2.db");
 
 function loescheTabelle(tabellenname) {
-  console.log("DataContext - Funktion loescheTabelle: " + tabellenname);
+  //console.log("DataContext - Funktion loescheTabelle: " + tabellenname);
   database.transaction(tx => {
     tx.executeSql("DROP TABLE " + tabellenname);
+    console.log("loescheTabelle: " + tabellenname);
   });
 }
 
 function erzeugeTabellen() {
-    console.log('DataContext - Funktion erzeugeTabelle: TabellenStrukturen werden erstellt ');
+    //console.log('DataContext - Funktion erzeugeTabelle: TabellenStrukturen werden erstellt ');
     database.transaction(tx => {
         tx.executeSql(
             'create table if not exists geschosse (id integer primary key not null, datensatztyp text, bezeichnung text, kaliber text, gewicht text, bc blob, preis real, bild blob);'
@@ -29,17 +30,16 @@ function erzeugeTabellen() {
 
         tx.executeSql(
           'create table if not exists laborierungen (id integer primary key not null, datensatztyp text, bezeichnung text, geschossID Integer, huelseID Integer, zuenderID Integer, pulverID Integer, beschichtungID Integer, oal real, notizen text, preis real, fertiggestellt integer, bild blob, streukreis real, trefferbild blob);'
-      );
-      console.log("Tabelle laborierungen erzeugt");
+        );
+        console.log("Tabelle laborierungen erzeugt");
     });
-
 } 
 
 function testDatenInDBErzeugen() {
   geschossTestdaten = [
     {
       datensatztyp: "Geschoss",
-      bezeichnung: "308WIN",
+      bezeichnung: "INIT_308WIN",
       kaliber: "308",
       gewicht: "168",
       bc: ".420",
@@ -48,7 +48,7 @@ function testDatenInDBErzeugen() {
     },
     {
       datensatztyp: "Geschoss",
-      bezeichnung: "223Rem",
+      bezeichnung: "INIT_223Rem",
       kaliber: "223",
       gewicht: "90",
       bc: ".400",
@@ -57,7 +57,7 @@ function testDatenInDBErzeugen() {
     },
     {
       datensatztyp: "Geschoss",
-      bezeichnung: "338WIN",
+      bezeichnung: "INIT_338WIN",
       kaliber: "338",
       gewicht: "250",
       bc: ".410",
@@ -66,7 +66,7 @@ function testDatenInDBErzeugen() {
     },
     {
       datensatztyp: "Geschoss",
-      bezeichnung: "50BMG",
+      bezeichnung: "INIT_50BMG",
       kaliber: "50",
       gewicht: "320",
       bc: ".390",
@@ -77,7 +77,7 @@ function testDatenInDBErzeugen() {
   huelsenTestdaten = [
     {
       datensatztyp: "Huelse",
-      bezeichnung: "Lapua Hülse Charge18",
+      bezeichnung: "INIT_Lapua Hülse Charge18",
       kaliber: "308",
       gewicht: "240",
       laenge: "50,95",
@@ -86,7 +86,7 @@ function testDatenInDBErzeugen() {
     },
     {
       datensatztyp: "Huelse",
-      bezeichnung: "Hornady Training",
+      bezeichnung: "INIT_Hornady Training",
       kaliber: "308",
       gewicht: "220",
       laenge: "50,5",
@@ -97,14 +97,14 @@ function testDatenInDBErzeugen() {
   pulverTestdaten = [
     {
       datensatztyp: "Pulver",
-      bezeichnung: "VV N140",
+      bezeichnung: "INIT_VV N140",
       notizen: "progressiv",
       preis: "8,70",
       bild: "https://png.pngtree.com/svg/20161205/PulverBild.png"
     },
     {
       datensatztyp: "Pulver",
-      bezeichnung: "VV N340",
+      bezeichnung: "INIT_VV N340",
       notizen: "Pressladung",
       preis: "9,20",
       bild: { uri: "https://png.pngtree.com/svg/20161205/PulverBild.png" },
@@ -113,7 +113,7 @@ function testDatenInDBErzeugen() {
   laborierungTestdaten = [
     {
       datensatztyp: "Laborierung",
-      bezeichnung: "Match-Patronen",
+      bezeichnung: "INIT_Match-Patronen",
       geschossID: 1,
       huelseID: 1,
       zuenderID: 1,
@@ -129,7 +129,7 @@ function testDatenInDBErzeugen() {
     },
     {
       datensatztyp: "Laborierung",
-      bezeichnung: "Versuchslaborierung1",
+      bezeichnung: "INIT_Versuchslaborierung1",
       geschossID: 1,
       huelseID: 1,
       zuenderID: 1,
@@ -145,7 +145,7 @@ function testDatenInDBErzeugen() {
     },
     {
       datensatztyp: "Laborierung",
-      bezeichnung: "Trainings Munition",
+      bezeichnung: "INIT_Trainings Munition",
       geschossID: 1,
       huelseID: 1,
       zuenderID: 1,
@@ -173,15 +173,13 @@ function testDatenInDBErzeugen() {
   for (var i = 0; i < laborierungTestdaten.length; i++) {
     speichereDatensatz(laborierungTestdaten[i]);
   }
-
 }
 
 function speichereDatensatz(datenObject) {
-  console.log(
-    "DataContext - Funktion speichere einzelnen Datensatz:" +
-      JSON.stringify(datenObject)+ ' zu Tabelle:'+datenObject.datensatztyp
-  );
-
+  // console.log(
+  //   "DataContext - Funktion speichere einzelnen Datensatz:" +
+  //     JSON.stringify(datenObject)+ ' zu datensatztyp:'+datenObject.datensatztyp
+  // );
     database.transaction(
         tx => {
             switch(datenObject.datensatztyp) {
@@ -215,8 +213,23 @@ function speichereDatensatz(datenObject) {
 }
 
 function ladeDBdaten(tabellenname, callback) {
+  //console.log("Lade Tabellenname: "+tabellenname);
+  database.transaction(tx => {
+    tx.executeSql("select * from " + tabellenname, [], (_, { rows }) => {
+      console.log(
+        "DataContext - ladeDBdaten aus Tabelle:" +
+          tabellenname +
+          " - Ergebnis: " +
+          JSON.stringify(rows._array)
+      );
+      callback(rows._array);
+    });
+  });
+}
 
-  console.log("Lade Tabellenname: "+tabellenname);
+function ladeFertigeLaborierungen(callback) {
+  //console.log("DATA-Context: Lade Fertige Laborierungen aus Datenbank");
+  const tabellenname = "laborierungen"; //Frage: aus Tabelle laborierungen kann nichts geladen werden. Mit Tabelle geschosse funktioniert es allerdings!
 
   database.transaction(tx => {
     tx.executeSql("select * from " + tabellenname, [], (_, { rows }) => {
@@ -231,30 +244,14 @@ function ladeDBdaten(tabellenname, callback) {
   });
 }
 
-
-function ladeFertigeLaborierungen(callback) {
-  console.log("DATA-Context: Lade Fertige Laborierungen aus DB");
-
-  database.transaction(tx => {
-    tx.executeSql("select * from laborierungen WHERE fertiggestellt = 1", [], (_, { rows }) => {
-      console.log(
-        "DataContext - Fertiger Laborierungsdatensatz aus Tabelle: "+
-          JSON.stringify(rows._array)
-      );
-      callback(rows._array);
-    });
-  });
-}
-
-
 function löscheZeile(tabellenname, bezeichnung) {
-  console.log(
-    "DataContext - Funktion löscheZeile: Es wird in Tabelle: " +
-      tabellenname +
-      " der Datensatz mit Bezeichner: " +
-      bezeichnung +
-      " gelöscht!"
-  );
+  // console.log(
+  //   "DataContext - Funktion löscheZeile: Es wird in Tabelle: " +
+  //     tabellenname +
+  //     " der Datensatz mit Bezeichner: " +
+  //     bezeichnung +
+  //     " gelöscht!"
+  // );
   database.transaction(tx => {
     tx.executeSql(
       "DELETE FROM " + tabellenname + " WHERE bezeichnung=" + bezeichnung,
@@ -269,10 +266,10 @@ function löscheZeile(tabellenname, bezeichnung) {
 }
 
 export default class DataContext {
-  myVariable = 123; //Instanzvariable
-  constructor() {
-    this.variable = 5678; //Instanzvariable über Konstruktur - JS-Standard
-  }
+  // myVariable = 123; //Instanzvariable
+  // constructor() {
+  //   this.variable = 5678; //Instanzvariable über Konstruktur - JS-Standard
+  // }
 
   InitialisiereDatenbak() {
     loescheTabelle('geschosse');
@@ -285,7 +282,7 @@ export default class DataContext {
 
   loescheDatensatz(Tabellenname, Bezeichnung) {
     //TODO: gegen SQLInjection sichern
-    console.log("DataContext - löscheDatensatz: "+Bezeichnung+" aus Tabelle: "+Tabellenname);
+    //console.log("DataContext - löscheDatensatz: "+Bezeichnung+" aus Tabelle: "+Tabellenname);
     löscheZeile(Tabellenname, Bezeichnung);
   }
 
@@ -309,124 +306,120 @@ export default class DataContext {
     return ladeFertigeLaborierungen(callback);
   }
 
-
   ladeFertigeLaborierungen_Mock(callback) {
+      geschoss1 = new Object();
+      geschoss1.bezeichnung = "Sierra Match King 168er";
+      geschoss1.kaliber = "308WIN";
+      geschoss1.gewicht = "168";
 
-    geschoss1 = new Object();
-    geschoss1.bezeichnung = "Sierra Match King 168er";
-    geschoss1.kaliber = "308WIN";
-    geschoss1.gewicht = "168";
+      geschoss2 = new Object();
+      geschoss2.bezeichnung = "Lapua Scenar L";
+      geschoss2.kaliber = "308WIN";
+      geschoss1.gewicht = "155";
 
-    geschoss2 = new Object();
-    geschoss2.bezeichnung = "Lapua Scenar L";
-    geschoss2.kaliber = "308WIN";
-    geschoss1.gewicht = "155";
+      huelse = new Object();
+      huelse.bezeichnung = "Lapua2019";
+      huelse.laenge = "50,8";
+      huelse.anzahlWiedergeladen = "3";
 
-    huelse = new Object();
-    huelse.bezeichnung = "Lapua2019";
-    huelse.laenge = "50,8";
-    huelse.anzahlWiedergeladen = "3";
+      pulver = new Object();
+      pulver.bezeichnung = "VV N140";
+      pulver.gewicht = "42";
 
-    pulver = new Object();
-    pulver.bezeichnung = "VV N140";
-    pulver.gewicht = "42";
+      zuender = new Object();
+      zuender.bezeichnung = "CCI BR2";
 
-    zuender = new Object();
-    zuender.bezeichnung = "CCI BR2";
-
-    beschichtung = new Object();
-    beschichtung.bezeichnung = "Moly";
-    beschichtung.dauer = "2";
-
-
-    var laborierungTestdaten = [
-    {
-      datensatztyp: "Laborierung",
-      bezeichnung: "Match-Patronen",
-      //geschossID: {name: "Geschossname", kaliber: "308"},
-      geschoss: geschoss1,
-      huelse: huelse,
-      zuender: zuender,
-      pulver: pulver,
-      beschichtung: beschichtung,
-      oal: "73,1",
-      notizen: "wird schnell heiss",
-      preis: "1,22",
-      fertiggestellt: true,
-      bild: "http://icons.iconarchive.com/icons/icons8/windows-8/256/Military-Ammo-Tin-icon.png",
-      streukreis: 16.0,
-      trefferbild: "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540anonymous%252FWiederladerApp-66a899d5-30e8-4956-9f4e-6c5dd4d4ec20/Camera/8b45a213-2524-4de3-a245-ee4e1d3a00cc.jpg",
-    
-    },
-    {
-      datensatztyp: "Laborierung",
-      bezeichnung: "Hornady MatchKing HPBT",
-      geschoss: geschoss2,
-      huelse: huelse,
-      zuender: zuender,
-      pulver: pulver,
-      beschichtung: beschichtung,
-      oal: "73,1",
-      notizen: "versuch mit pressladung",
-      preis: "0,71",
-      fertiggestellt: true,
-      bild: { uri: "http://icons.iconarchive.com/icons/icons8/windows-8/256/Military-Ammo-Tin-icon.png" },
-      streukreis: 19.5,
-      trefferbild: "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540anonymous%252FWiederladerApp-66a899d5-30e8-4956-9f4e-6c5dd4d4ec20/Camera/f6146b00-b89a-4d98-a594-9706c0fb0b67.jpg"
-    },
-    {
-      datensatztyp: "Laborierung",
-      bezeichnung: "Surplus Training",
-      geschoss: geschoss2,
-      huelse: huelse,
-      zuender: zuender,
-      pulver: pulver,
-      beschichtung: beschichtung,
-      oal: "72,0",
-      notizen: "günstiger Preis",
-      preis: "0,45",
-      fertiggestellt: true,
-      bild: { uri: "http://icons.iconarchive.com/icons/icons8/windows-8/256/Military-Ammo-Tin-icon.png" },
-      streukreis: 20.5,
-      trefferbild: "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540anonymous%252FWiederladerApp-66a899d5-30e8-4956-9f4e-6c5dd4d4ec20/Camera/7d9142eb-4c50-42d8-a15a-529b69512aad.jpg"
-    },
-    {
-      datensatztyp: "Laborierung",
-      bezeichnung: "Hornady Fertigkeit",
-      geschoss: geschoss2,
-      huelse: huelse,
-      zuender: zuender,
-      pulver: pulver,
-      beschichtung: beschichtung,
-      oal: "72,0",
-      notizen: "günstiger Preis",
-      preis: "0,75",
-      fertiggestellt: true,
-      bild: { uri: "http://icons.iconarchive.com/icons/icons8/windows-8/256/Military-Ammo-Tin-icon.png" },
-      streukreis: "",
-      trefferbild: ""
-    },
-    {
-      datensatztyp: "Laborierung",
-      bezeichnung: "Match 300m",
-      geschoss: geschoss2,
-      huelse: huelse,
-      zuender: zuender,
-      pulver: pulver,
-      beschichtung: beschichtung,
-      oal: "73,0",
-      notizen: "stärker geladen",
-      preis: "0,75",
-      fertiggestellt: true,
-      bild: { uri: "http://icons.iconarchive.com/icons/icons8/windows-8/256/Military-Ammo-Tin-icon.png" },
-      streukreis: "",
-      trefferbild: ""
-    }
-  ];
-  return callback(laborierungTestdaten);
-}
+      beschichtung = new Object();
+      beschichtung.bezeichnung = "Moly";
+      beschichtung.dauer = "2";
 
 
+      var laborierungTestdaten = [
+      {
+        datensatztyp: "Laborierung",
+        bezeichnung: "Match-Patronen",
+        //geschossID: {name: "Geschossname", kaliber: "308"},
+        geschoss: geschoss1,
+        huelse: huelse,
+        zuender: zuender,
+        pulver: pulver,
+        beschichtung: beschichtung,
+        oal: "73,1",
+        notizen: "wird schnell heiss",
+        preis: "1,22",
+        fertiggestellt: true,
+        bild: "http://icons.iconarchive.com/icons/icons8/windows-8/256/Military-Ammo-Tin-icon.png",
+        streukreis: 16.0,
+        trefferbild: "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540anonymous%252FWiederladerApp-66a899d5-30e8-4956-9f4e-6c5dd4d4ec20/Camera/8b45a213-2524-4de3-a245-ee4e1d3a00cc.jpg",
+      
+      },
+      {
+        datensatztyp: "Laborierung",
+        bezeichnung: "Hornady MatchKing HPBT",
+        geschoss: geschoss2,
+        huelse: huelse,
+        zuender: zuender,
+        pulver: pulver,
+        beschichtung: beschichtung,
+        oal: "73,1",
+        notizen: "versuch mit pressladung",
+        preis: "0,71",
+        fertiggestellt: true,
+        bild: { uri: "http://icons.iconarchive.com/icons/icons8/windows-8/256/Military-Ammo-Tin-icon.png" },
+        streukreis: 19.5,
+        trefferbild: "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540anonymous%252FWiederladerApp-66a899d5-30e8-4956-9f4e-6c5dd4d4ec20/Camera/f6146b00-b89a-4d98-a594-9706c0fb0b67.jpg"
+      },
+      {
+        datensatztyp: "Laborierung",
+        bezeichnung: "Surplus Training",
+        geschoss: geschoss2,
+        huelse: huelse,
+        zuender: zuender,
+        pulver: pulver,
+        beschichtung: beschichtung,
+        oal: "72,0",
+        notizen: "günstiger Preis",
+        preis: "0,45",
+        fertiggestellt: true,
+        bild: { uri: "http://icons.iconarchive.com/icons/icons8/windows-8/256/Military-Ammo-Tin-icon.png" },
+        streukreis: 20.5,
+        trefferbild: "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540anonymous%252FWiederladerApp-66a899d5-30e8-4956-9f4e-6c5dd4d4ec20/Camera/7d9142eb-4c50-42d8-a15a-529b69512aad.jpg"
+      },
+      {
+        datensatztyp: "Laborierung",
+        bezeichnung: "Hornady Fertigkeit",
+        geschoss: geschoss2,
+        huelse: huelse,
+        zuender: zuender,
+        pulver: pulver,
+        beschichtung: beschichtung,
+        oal: "72,0",
+        notizen: "günstiger Preis",
+        preis: "0,75",
+        fertiggestellt: true,
+        bild: { uri: "http://icons.iconarchive.com/icons/icons8/windows-8/256/Military-Ammo-Tin-icon.png" },
+        streukreis: "",
+        trefferbild: ""
+      },
+      {
+        datensatztyp: "Laborierung",
+        bezeichnung: "Match 300m",
+        geschoss: geschoss2,
+        huelse: huelse,
+        zuender: zuender,
+        pulver: pulver,
+        beschichtung: beschichtung,
+        oal: "73,0",
+        notizen: "stärker geladen",
+        preis: "0,75",
+        fertiggestellt: true,
+        bild: { uri: "http://icons.iconarchive.com/icons/icons8/windows-8/256/Military-Ammo-Tin-icon.png" },
+        streukreis: "",
+        trefferbild: ""
+      }
+    ];
+    return callback(laborierungTestdaten);
+  }
 
 
   ladeMOCKLaborierungsDaten(callback) {
@@ -508,7 +501,4 @@ export default class DataContext {
     ];
     return callback(laborierungTestdaten);
   }
-
-
-
 }

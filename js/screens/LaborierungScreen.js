@@ -18,6 +18,10 @@ export default class LaborierungScreen extends Component {
   state = { data: [], isLoading: true };
 
 
+_ladeDatenausDB(){
+  db.ladeDaten('laborierungen', ergebnis => this.setState({data: ergebnis,  isLoading: false }));
+}
+
  _ladeLaborierungDatenAusDB = async () => {
   try {
     //Frage: Warum kann ich tabelle laborierung nicht genau so laden wie tabelle geschosse in ArsenalSubMenueScreen?
@@ -49,7 +53,8 @@ _ladeLaborierungDatenAusDB_MOCK(){
 
   _refresh = () => {
     this.setState({ isLoading: true });
-    this._ladeLaborierungDatenAusDB();
+    //this._ladeLaborierungDatenAusDB();
+    this._ladeDatenausDB();
   };
 
   componentDidMount() {

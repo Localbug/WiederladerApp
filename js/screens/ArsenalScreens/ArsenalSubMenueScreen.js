@@ -18,15 +18,9 @@ export default class ArsenalItemScreen extends Component {
 
   state = { data: [], isLoading: true};
 
-  _refresh = () => {
-    this.setState({ isLoading: true });
-    db.ladeDaten('geschosse', ergebnis => this.setState({data: ergebnis,  isLoading: false }));
-  };
-
-  componentDidMount() {
+  _ladeDatenausDatenbank(){
     const ausgewaehltesArsenalMenue = this.props.navigation.getParam('ausgewaehltesArsenalMenue');
     
-    //Frage: Warum kann ich lediglich tabelle 'geschosse' aus der Datenbank laden. Aufruf aller weiteren Tabellen liefert ein leeres Ergebnis?
     console.log("Lade DB-Daten für Menue: "+ausgewaehltesArsenalMenue.menueTitel)
     switch(ausgewaehltesArsenalMenue.menueTitel){
       case "Geschosse":
@@ -39,10 +33,18 @@ export default class ArsenalItemScreen extends Component {
          db.ladeDaten('pulver', ergebnis => this.setState({data: ergebnis,  isLoading: false }));
          break;
       default:
-        console.log('Fehler in ArsenalSubMenu componenteDidMount - Kein Case zu menuTitel '+ausgewaehltesArsenalMenue.menueTitel+ " gefunden.");
+        console.log('!!!!Fehler in ArsenalSubMenu componenteDidMount - Kein Case zu menuTitel '+ausgewaehltesArsenalMenue.menueTitel+ " gefunden.");
     }
-    console.log('Ergebnis in State gesetzt: '+JSON.stringify(this.state.data));
+    //console.log('Ergebnis in State gesetzt: '+JSON.stringify(this.state.data));
+  }
 
+  _refresh = () => {
+    this.setState({ isLoading: true });
+    this._ladeDatenausDatenbank();
+  };
+
+  componentDidMount() {
+    this._ladeDatenausDatenbank();
   }
 
   render() {
@@ -106,9 +108,9 @@ const width = Dimensions.get('window').width * 0.75;
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20
+    alignItems: 'flex-start',
+    //justifyContent: 'center',
+    paddingTop: 20
   },
   scrollview: {
     backgroundColor: '#fff'
@@ -120,12 +122,6 @@ const styles = StyleSheet.create({
   },
   button:{
       marginTop: 5, 
-  },
-  FlatListcontainer: {
-    flex: 1,
-    justifyContent: 'center',
-    backgroundColor: '#fff',
-    paddingTop: 30
   },
   listSeparator: {
     height: StyleSheet.hairlineWidth,
