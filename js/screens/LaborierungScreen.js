@@ -19,7 +19,10 @@ export default class LaborierungScreen extends Component {
 
 
 _ladeDatenausDB(){
-  db.ladeDaten('laborierungen', ergebnis => this.setState({data: ergebnis,  isLoading: false }));
+  db.ladeDaten('laborierungen', ergebnis => {
+    console.log("!!!!!!!Geladene Laborierung: "+JSON.stringify(ergebnis));
+    this.setState({data: ergebnis,  isLoading: false })
+  });
 }
 
  _ladeLaborierungDatenAusDB = async () => {
@@ -59,7 +62,8 @@ _ladeLaborierungDatenAusDB_MOCK(){
 
   componentDidMount() {
     //this._ladeLaborierungDatenAusDB();
-    this._ladeLaborierungDatenAusDB_MOCK();
+    //this._ladeLaborierungDatenAusDB_MOCK();
+    this._ladeDatenausDB();
   }
 
   render() {

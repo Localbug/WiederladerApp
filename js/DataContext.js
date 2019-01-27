@@ -110,6 +110,7 @@ function testDatenInDBErzeugen() {
       bild: { uri: "https://png.pngtree.com/svg/20161205/PulverBild.png" },
     }
   ];
+
   laborierungTestdaten = [
     {
       datensatztyp: "Laborierung",
@@ -199,7 +200,7 @@ function speichereDatensatz(datenObject) {
                     console.log('Erzeuge Pulver DB Eintrag: '+datenObject.datensatztyp +' - '+datenObject.bezeichnung+' - ' +datenObject.notizen+' - '+datenObject.preis+' - '+datenObject.bild);
                     break;
                 case 'Laborierung':
-                    tx.executeSql('insert into laborierungen (datensatztyp, bezeichnung, geschossID, huelseID, zuenderID, pulverID, beschichtungID, oal, notizen, preis, fertiggestellt, bild, streukreis, trefferbild) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+                    tx.executeSql('insert into laborierungen (datensatztyp, bezeichnung, geschossID, huelseID, zuenderID, pulverID, beschichtungID, oal, notizen, preis, fertiggestellt, bild, streukreis, trefferbild) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
                     [datenObject.datensatztyp, datenObject.bezeichnung, datenObject.geschossID, datenObject.huelseID, datenObject.zuenderID, datenObject.pulverID, datenObject.beschichtungID, datenObject.oal, datenObject.notizen, datenObject.preis, datenObject.fertiggestellt, datenObject.bild, datenObject.streukreis, datenObject.trefferbild] );
                     console.log('Erzeuge Laborierung DB Eintrag: '+datenObject.datensatztyp +' - '+datenObject.bezeichnung+' - '+datenObject.geschossID+' - '+datenObject.huelseID+' - '+datenObject.beschichtungID+' - '+datenObject.oal+' - '+datenObject.pulverID+' - '+datenObject.beschichtungID+' - '+datenObject.notizen+' - '+datenObject.preis+' - '+datenObject.fertiggestellt+' - '+datenObject.bild+' - '+datenObject.streukreis+' - '+datenObject.trefferbild);
                     break;
@@ -213,6 +214,12 @@ function speichereDatensatz(datenObject) {
 }
 
 function ladeDBdaten(tabellenname, callback) {
+
+  if (tabellenname = "laborierungen"){
+    console.log("Context.ladeDBdaten soll Laborierungen laden, deshalb wird es an Methode ladeLaborierungen weiter delegiert, denn Laborierungen müssen aus mehreren Tabellen zusammengebaut werden!");
+    this.ladeLaborierungen(callback); //Callback wird weitergegeben
+  }
+
   //console.log("Lade Tabellenname: "+tabellenname);
   database.transaction(tx => {
     tx.executeSql("select * from " + tabellenname, [], (_, { rows }) => {
@@ -226,6 +233,66 @@ function ladeDBdaten(tabellenname, callback) {
     });
   });
 }
+
+function ladeLaborierungen(callback){
+
+  let laborierungsarray;
+  console.log("ladeLaborierungen: Hier wird nun laborierung gesucht.. ");
+
+  database.transaction(tx => {
+    tx.executeSql("select * from laborierungen", [], (_, { rows }) => {
+      console.log("DataContext - erstelleLaborierung läd Laborierungsgrundgerüst:"+JSON.stringify(rows._array));
+
+      //Für jeden einzelnen LaborierungsDatensatz die Untertabellen laden und als Object einfügen
+      for (var i = 0; i = rows._array.length; i++) {
+        
+        let laborierung = rows._array[i];
+        let laborierungsGeschoss;
+
+        geschoss1 = new Object();
+        geschoss1.bezeichnung = "Sierra Match King 168er";
+        geschoss1.kaliber = "308WIN";
+        geschoss1.gewicht = "168";
+  
+        let labo =  
+        {
+          datensatztyp: "Laborierung",
+          bezeichnung: "ErstellteLabo",
+          geschoss: geschoss1,
+          huelse: geschoss1,
+          zuender: geschoss1,
+          pulver: geschoss1,
+          beschichtung: geschoss1,
+          oal: "73,0",
+          notizen: "Laborierung wurde generiert",
+          preis: "0,75",
+          fertiggestellt: true,
+          bild: { uri: "http://icons.iconarchive.com/icons/icons8/windows-8/256/Military-Ammo-Tin-icon.png" },
+          streukreis: "",
+          trefferbild: ""
+        }
+
+        console.log("zusammengebaute Labo in Array Pushen: "+JSON.stringify(labo));
+        laborierungsarray.push(labo);
+
+        // //Geschossdaten dazu laden:
+        // database.transaction(tx => {
+        //   tx.executeSql("select * from geschosse where id = 1", [], (_, { rows }) => { //TODO: id dynamisch machen, irgenwo muss die id ja her kommen..
+        //     let geschoss = rows._array;
+        //     console.log("DataContext - erstelleLaborierung läd aus geschosse Datendatz:"+JSON.stringify(geschoss));
+        //     laborierungsGeschoss = geschoss;
+        //   });
+        // });
+
+      }
+  
+    })
+  })
+  console.log("laborierungsarray: "+JSON.stringify(laborierungsarray));
+  callback(laborierungsarray);
+};
+
+
 
 function ladeFertigeLaborierungen(callback) {
   //console.log("DATA-Context: Lade Fertige Laborierungen aus Datenbank");

@@ -121,7 +121,7 @@ export default class SchießstandScreen extends Component {
             <Text style={{left: 15}}>Bitte wähle eine der fertigen Laborierungen aus:</Text>
             <FlatList
               data={this.state.data}
-              keyExtractor={item => item.bezeichnung} //item.email
+              keyExtractor={item => item.bezeichnung} //item.email //TODO: item.bezeichnung
               renderItem={({ item }) => (
                 <LaborierungListItem 
                   ausgewaehlteLaborierung={item}

@@ -5,8 +5,7 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 export default function(props) {
   const { ausgewaehltesArsenalItem, onPress } = props;
 
-  console.log("!!!!!ArsenalListItem anzeige für DatensatzTyp: " +JSON.stringify(ausgewaehltesArsenalItem));
-
+  //console.log("!!!!!ArsenalListItem anzeige für DatensatzTyp: " +JSON.stringify(ausgewaehltesArsenalItem));
   switch (ausgewaehltesArsenalItem.datensatztyp) {
     case "Geschoss":
       return (

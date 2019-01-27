@@ -77,7 +77,7 @@ const TabNavigator = createBottomTabNavigator(
     TabRechts: {
       screen: InfoScreen,
       navigationOptions: {
-        title: 'Schießstand',
+        title: 'Info',
         tabBarIcon: ({ tintColor }) => (
           <Icon.Feather name="info" size={24} color={tintColor} />
         )
