@@ -9,6 +9,7 @@ import DBContext from '../../DataContext';
 export default class TakePictureScreen extends Component {
   static navigationOptions = ({ navigation }) => {
     const laborierung = navigation.getParam('ausgewaehlteLaborierung');
+    console.log("ausgewählter Datensatz: "+JSON.stringify(laborierung));
     return {
       title: "Trefferbild aufnahmen:"//title: `${laborierung.bezeichnung} ${":"}`
     };
@@ -25,16 +26,24 @@ export default class TakePictureScreen extends Component {
     this.setState({ hasCameraPermission: status === 'granted' });
   }
 
-  async snapPhoto() {       
+  async snapPhoto() {    
+    const laborierung = this.props.navigation.getParam('ausgewaehlteLaborierung');
     console.log('Button Pressed');
     if (this.camera) {
        console.log('Taking photo');
-       const options = { quality: 1, base64: true, fixOrientation: true, 
+        //quality (number) -- Specify the quality of compression, from 0 to 1. 0 means compress for small size, 1 means compress for maximum quality.
+        //base64 (boolean) -- Whether to also include the image data in Base64 format.
+        //exif (boolean) -- Whether to also include the EXIF data for the image
+        //width: 1920
+       const options = { quality: 1, base64: false, fixOrientation: false, 
        exif: true};
        await this.camera.takePictureAsync(options).then(photo => {
           photo.exif.Orientation = 1;            
-           console.log(photo);            
-           });     
+           console.log(photo);   
+           console.log("photo.uri: "+photo.uri);   
+           laborierung.trefferbild = photo.uri;    
+           console.log("Trefferbild wurde in laborierungObjekt gespeichert: "+JSON.stringify(laborierung));     
+        });     
      }
   }
 
@@ -76,12 +85,15 @@ export default class TakePictureScreen extends Component {
               </TouchableOpacity>
             </View>
 
-            <TouchableOpacity style={styles.captureButton} onPress={this.snapPhoto.bind(this)}>
-                <Image style={{width: 100, height: 100, alignSelf: 'center'}} source={require('../../../assets/takePicIcon.png')}          
+            <TouchableOpacity onPress={this.snapPhoto.bind(this)}>
+                <Image style={{width: 300, height: 300, alignSelf: 'center', backgroundColor: 'transparent'}} source={require('../../../assets/FadenkreuzIcon.png')}          
                 />
             </TouchableOpacity>
 
-
+            <TouchableOpacity onPress={this.snapPhoto.bind(this)}>
+                <Image style={{width: 100, height: 100, alignSelf: 'center'}} source={require('../../../assets/takePicIcon.png')}          
+                />
+            </TouchableOpacity>
           </Camera>
         </View>
       );

@@ -20,14 +20,6 @@ export default class SchießstandItemScreen extends Component {
     db.loescheDatensatz("laborierungen", laborierungsbezeichnung);
   }
 
-  erzeugeArrayMitScrollRange(){
-    let dataSource = [];
-    for (var i = 0; i <= 500; i++) {
-      dataSource.push(i);
-    }
-    return dataSource;
-  }
-
   render() {
     const laborierung = this.props.navigation.getParam('ausgewaehlteLaborierung');
 
@@ -75,7 +67,7 @@ export default class SchießstandItemScreen extends Component {
                 leftButtonBackgroundColor='#E56B70'/>
 
             <TouchableOpacity style={{paddingLeft: 10}} 
-                onPress={() => this.props.navigation.navigate('TakePictureScreen', {})}>
+                onPress={() => this.props.navigation.navigate('TakePictureScreen', {ausgewaehlteLaborierung: laborierung})}>
                 <Text style={{fontSize: 10}}>Treffer aufnehmen:</Text>
                 <Image style={{width: 40, height: 40}} source={require('../../../assets/takePicIcon.png')}          
                 />
@@ -95,8 +87,10 @@ export default class SchießstandItemScreen extends Component {
         </View>
 
         <Text>Trefferbild:</Text>
-        <Image style={{width: 250, height: 250, alignSelf: 'center'}} source= {{uri: 'https://facebook.github.io/react-native/docs/assets/favicon.png'}}         
-            />
+        <Image style={{width: 250, height: 250, alignSelf: 'center'}} 
+            //source= {{uri: 'https://facebook.github.io/react-native/docs/assets/favicon.png'}}  
+            source= {{uri: laborierung.trefferbild }}
+        />
 
       </ScrollView>
     );
