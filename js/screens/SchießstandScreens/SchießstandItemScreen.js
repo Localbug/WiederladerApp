@@ -14,12 +14,15 @@ export default class SchießstandItemScreen extends Component {
   };
 
   LaborierungLoeschen(laborierungsbezeichnung){
-    //TODO: Laborierung Löschen funktioniert nicht!
-
     db = new DBContext();
     db.loescheDatensatz("laborierungen", laborierungsbezeichnung);
   }
 
+  DatenInDBAktualisieren(tabelle, datenObjekt) {
+    db = new DBContext();
+    db.aktualisiereDatensatz(tabelle, datenObjekt);
+  }
+  
   render() {
     const laborierung = this.props.navigation.getParam('ausgewaehlteLaborierung');
 
@@ -54,7 +57,7 @@ export default class SchießstandItemScreen extends Component {
                 //value={this.state.value} 
                 initValue = {20.0}
                 //onChange={value => this.setState({value})} 
-                onChange={value => console.log(value)} 
+                onChange={value => {console.log(value); laborierung.streukreis = value;}}
                 totalWidth={220} 
                 totalHeight={70} 
                 iconSize={25}
@@ -83,14 +86,24 @@ export default class SchießstandItemScreen extends Component {
               placeholderTextColor="grey"
               numberOfLines={5}
               multiline={true}
+              onChange={value =>laborierung.notizen = value}
             />
         </View>
 
         <Text>Trefferbild:</Text>
         <Image style={{width: 250, height: 250, alignSelf: 'center'}} 
-            //source= {{uri: 'https://facebook.github.io/react-native/docs/assets/favicon.png'}}  
             source= {{uri: laborierung.trefferbild }}
         />
+
+        <TouchableOpacity
+          style = {styles.submitButton}
+          onPress={(item) =>{
+            this.DatenInDBAktualisieren("laborierungen", laborierung);
+            this.props.navigation.navigate('Schießstandscreen')
+            //this.props.navigation.goBack(null);
+          }}>
+          <Text style = {styles.submitButtonText}> Speichern </Text>
+        </TouchableOpacity>
 
       </ScrollView>
     );
@@ -111,9 +124,6 @@ const styles = StyleSheet.create({
     paddingTop: 30
   },
   container: {
-    //alignItems: 'center',
-    //justifyContent: 'flex-start',
-    //textAlign: 'left',
     padding: 20
   },
   scrollview: {
@@ -133,6 +143,14 @@ const styles = StyleSheet.create({
   },
   textArea: {
     height: 50,
-    //justifyContent: "flex-start"
+  },
+  submitButton: {
+      backgroundColor: '#E56B70',
+      padding: 10,
+      margin: 15,
+      height: 40,
+  },
+  submitButtonText:{
+      color: 'white'
   }
 });

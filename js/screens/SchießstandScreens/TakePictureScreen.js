@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
 import { Dimensions, Image, View, StyleSheet, Text, TouchableOpacity} from 'react-native';
-
 import { Camera, Permissions } from 'expo';
-import DBContext from '../../DataContext';
-
 
 //Detailansicht der ausgewählten Laborierung
 export default class TakePictureScreen extends Component {
@@ -41,9 +38,10 @@ export default class TakePictureScreen extends Component {
           photo.exif.Orientation = 1;            
            console.log(photo);   
            console.log("photo.uri: "+photo.uri);   
-           laborierung.trefferbild = photo.uri;    
+           laborierung.trefferbild = photo.uri;   //Bild wird in prop gespeichert und in Schießstandscreen zusammen mit den anderen Daten in DB gespeichert 
            console.log("Trefferbild wurde in laborierungObjekt gespeichert: "+JSON.stringify(laborierung));     
-        });     
+        });  
+        this.props.navigation.goBack(); //Ein Screen zurück springen   
      }
   }
 

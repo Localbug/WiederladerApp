@@ -16,16 +16,13 @@ import DBContext from '../DataContext';
 export default class SchießstandScreen extends Component {
   static navigationOptions = { header: null };
 
-  state = { data: [], isLoading: true, temperatur: "", wind: "" };
-
+  state = { fertigeLaborierungen: [], waffen: [], schießstaende: [], isLoading: true, temperatur: "", wind: "" };
 
   _ladeFertigeLaborierungenDatenAusDB = async () => {
     try {
-      //Frage: Warum kann ich tabelle laborierung nicht genau so laden wie tabelle geschosse in ArsenalSubMenueScreen?
       db = new DBContext();
-      db.ladeFertigeLaborierungen(ergebnis => this.setState({data: ergebnis,  isLoading: false }));
-      console.log('Fertige Laborierungen geladen und in State gesetzt: '+JSON.stringify(this.state.data));
-  
+      db.ladeFertigeLaborierungen(ergebnis => this.setState({fertigeLaborierungen: ergebnis,  isLoading: false }));
+      console.log('Fertige Laborierungen geladen und in State gesetzt: '+JSON.stringify(this.state.fertigeLaborierungen));
     } catch (error) {
       console.log('Fehler - Laborierenscreen: Laborierungen konnten nicht geladen werden! ');
       alert('Fehler: Keine laborierung DB Daten empfangen');
@@ -35,47 +32,45 @@ export default class SchießstandScreen extends Component {
   
   _ladeFertigeLaborierungenDatenAusDB_MOCK(){
     db = new DBContext();
-    db.ladeFertigeLaborierungen_Mock(ergebnis => this.setState({data: ergebnis,  isLoading: false }));
-    console.log('Fertige Laborierungen aus Mock geladen und in State gesetzt: '+JSON.stringify(this.state.data));
+    db.ladeFertigeLaborierungen_Mock(ergebnis => this.setState({fertigeLaborierungen: ergebnis,  isLoading: false }));
+    console.log('Fertige Laborierungen aus Mock geladen und in State gesetzt: '+JSON.stringify(this.state.fertigeLaborierungen));
   };
   
+  _ladeSchießsstandDatenAusDB_MOCK(){
+    db = new DBContext();
+    db.ladeMOCKSchießstandDaten(ergebnis => this.setState({schießstaende: ergebnis,  isLoading: false }));
+    console.log('Schießsstände aus Mock geladen und in State gesetzt: '+JSON.stringify(this.state.schießstaende));
+  };
+ 
+  _ladeWaffenDatenAusDB_MOCK(){
+    db = new DBContext();
+    db.ladeMOCKWaffenDaten(ergebnis => this.setState({waffen: ergebnis,  isLoading: false }));
+    console.log('Schießsstände aus Mock geladen und in State gesetzt: '+JSON.stringify(this.state.waffen));
+  };
 
   _refresh = () => {
     this.setState({ isLoading: true });
-    this._ladeFertigeLaborierungenDatenAusDB();
-    //this._ladeFertigeLaborierungenDatenAusDB_MOCK();
+    //this._ladeFertigeLaborierungenDatenAusDB();
+    this._ladeFertigeLaborierungenDatenAusDB_MOCK();
+    this._ladeSchießsstandDatenAusDB_MOCK();
+    this._ladeWaffenDatenAusDB_MOCK();
   };
 
   componentDidMount() {
-    this._ladeFertigeLaborierungenDatenAusDB();
-    //this._ladeFertigeLaborierungenDatenAusDB_MOCK();
+    //this._ladeFertigeLaborierungenDatenAusDB();
+    this._ladeFertigeLaborierungenDatenAusDB_MOCK();
+    this._ladeSchießsstandDatenAusDB_MOCK();
+    this._ladeWaffenDatenAusDB_MOCK();
   }
 
   render() {
     //const ausgewaehltesArsenalMenue = this.props.navigation.getParam('ausgewaehltesArsenalMenue');
-
     if (this.state.isLoading)
       return (
         <View style={styles.container}>
           <ActivityIndicator size="large" color="darkorange" />
         </View>
       );
-
-      let dpSchießstand = [{
-        value: 'Schießstand1',
-      }, {
-        value: 'Schießstand2',
-      }, {
-        value: 'Schießstand3',
-      }];
-
-      let dpWaffe = [{
-        value: 'Waffe1',
-      }, {
-        value: 'Waffe2',
-      }, {
-        value: 'Waffe3',
-      }];
 
     return (
       <View style={styles.container}>
@@ -94,12 +89,12 @@ export default class SchießstandScreen extends Component {
             <View style= {{left: 15}}>
                 <Dropdown
                   label='Schießstand auswählen'
-                  data={dpSchießstand}
+                  data={this.state.schießstaende}
                 />
               
                 <Dropdown
                   label='Waffe auswählen'
-                  data={dpWaffe}
+                  data={this.state.waffen}
                 />
             </View>
 
@@ -120,8 +115,8 @@ export default class SchießstandScreen extends Component {
           <ScrollView style= {{position: 'absolute', top:280}}>
             <Text style={{left: 15}}>Bitte wähle eine der fertigen Laborierungen aus:</Text>
             <FlatList
-              data={this.state.data}
-              keyExtractor={item => item.bezeichnung} //item.email //TODO: item.bezeichnung
+              data={this.state.fertigeLaborierungen}
+              keyExtractor={item => item.bezeichnung} 
               renderItem={({ item }) => (
                 <LaborierungListItem 
                   ausgewaehlteLaborierung={item}

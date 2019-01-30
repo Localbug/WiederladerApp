@@ -12,14 +12,14 @@ export default class LaborierungItemScreen extends Component {
   };
 
   LaborierungLoeschen(laborierungsbezeichnung){
-    //TODO: Laborierung Löschen funktioniert nicht!
-
     db = new DBContext();
     db.loescheDatensatz("laborierungen", laborierungsbezeichnung);
-    
-
   }
 
+  DatenInDBAktualisieren(tabelle, datenObjekt) {
+    db = new DBContext();
+    db.aktualisiereDatensatz(tabelle, datenObjekt);
+  }
 
   render() {
     const laborierung = this.props.navigation.getParam('ausgewaehlteLaborierung');
@@ -36,7 +36,7 @@ export default class LaborierungItemScreen extends Component {
             value={laborierung.fertiggestellt}
             disabled={true}
             //onValueChange={() => this.setState({ checked: !this.state.checked })}
-            //onValueChange={alert("Checkbox geändert")}
+            //onValueChange={() => {laborierung.fertiggestellt = checked; this.DatenInDBAktualisieren(laborierung.bezeichnung)}} //TODO: Fertiggstellt Updaten
           />
           <Text style={{marginTop: 5}}> Laborierung fertiggestellt</Text>
         </View>
@@ -82,12 +82,11 @@ export default class LaborierungItemScreen extends Component {
             title= "Resultate eingeben     "
             onPress={() =>{
 
-                alert("Damit wurde die Laborierung auf Status: 'Fertiggestellt' aktualisiert");
-                //TODO: Fertiggstellt Updaten
+                alert("Damit wurde die Laborierung auf Status: 'Fertiggestellt' aktualisiert"); 
+                //this.DatenInDBAktualisieren(laborierung.bezeichnung) //TODO: Fertiggstellt Updaten
 
                 this.props.navigation.navigate('Schießstandscreen', {
-                      ausgewaehlteLaborierung: laborierung.bezeichnung
-
+                      ausgewaehlteLaborierung: laborierung
                 })
               }
             }

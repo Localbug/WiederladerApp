@@ -12,6 +12,12 @@ function SettingsHeader(props) {
 }
 
 export default class InfoScreen extends Component {
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: 'Infos & Settings:'
+    };
+  };
+
   render() {
     return (
       <View style={styles.container}>
@@ -19,13 +25,11 @@ export default class InfoScreen extends Component {
           sections={[
             {
               title: 'Version',
-              data: [{ key: '1', info: '0.2' }]
+              data: [{ key: '1', info: '0.3', Entwickler: 'Fabian Dorner' }]
             },
             {
               title: 'Impressum',
-              data: [
-              { key: '2', Entwickler: 'Fabian Dorner' },
-              { key: '3', AppName: 'WiederladerApp'} ]
+              data: [{ key: '1', Entwickler: 'Fabian Dorner' }]
             }
           ]}
           renderItem={({ item }) => <SettingsItem text={item.info} />}

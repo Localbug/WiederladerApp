@@ -20,50 +20,26 @@ export default class LaborierungScreen extends Component {
 
 _ladeDatenausDB(){
   db.ladeDaten('laborierungen', ergebnis => {
-    console.log("!!!!!!!Geladene Laborierung: "+JSON.stringify(ergebnis));
+    console.log("!Geladene Laborierung: "+JSON.stringify(ergebnis));
     this.setState({data: ergebnis,  isLoading: false })
   });
 }
 
- _ladeLaborierungDatenAusDB = async () => {
-  try {
-    //Frage: Warum kann ich tabelle laborierung nicht genau so laden wie tabelle geschosse in ArsenalSubMenueScreen?
-    db = new DBContext();
-    db.ladeDaten('laborierungen', ergebnis => this.setState({data: ergebnis,  isLoading: false }));
-    console.log('Laborierungen geladen und in State gesetzt: '+JSON.stringify(this.state.data));
-
-  } catch (error) {
-    console.log('Fehler - Laborierenscreen: Laborierungen konnten nicht geladen werden! ');
-    alert('Fehler: Keine laborierung DB Daten empfangen');
-    this.setState({ isLoading: false });
-  }
-};
-
 _ladeLaborierungDatenAusDB_MOCK(){
-
   db = new DBContext();
   db.ladeMOCKLaborierungsDaten(ergebnis => this.setState({data: ergebnis,  isLoading: false }));
-  
-  //Frage: Warum bekomm ich nicht mal in diesem Mock ohne die DB das Array in den State?
   console.log('Laborierungen geladen und in State gesetzt: '+JSON.stringify(this.state.data));
-  console.log('Laborierungen geladen und in State gesetzt: '+JSON.stringify(this.state.data[0]));
-
 };
-
-
-
-
 
   _refresh = () => {
     this.setState({ isLoading: true });
-    //this._ladeLaborierungDatenAusDB();
-    this._ladeDatenausDB();
+    this._ladeLaborierungDatenAusDB();
+    //this._ladeDatenausDB();
   };
 
   componentDidMount() {
-    //this._ladeLaborierungDatenAusDB();
-    //this._ladeLaborierungDatenAusDB_MOCK();
-    this._ladeDatenausDB();
+    this._ladeLaborierungDatenAusDB_MOCK();
+    //this._ladeDatenausDB();
   }
 
   render() {
@@ -76,9 +52,6 @@ _ladeLaborierungDatenAusDB_MOCK(){
         </View>
       );
     return (
-
-
-
       <View style={styles.container}>
         <View style= {{position: 'absolute', top:30, right:5}}>
           <Button
@@ -89,7 +62,6 @@ _ladeLaborierungDatenAusDB_MOCK(){
                   })}
           />
         </View>
-
 
         <View style= {{position: 'absolute', top:100}}>
           <FlatList

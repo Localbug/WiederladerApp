@@ -13,6 +13,12 @@ function SettingsHeader(props) {
 }
 
 export default class ArsenalScreen extends Component {
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: 'WiederladerAPP'
+    };
+  };
+
   render() {
     return (
       <View style={styles.container}>

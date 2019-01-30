@@ -33,7 +33,6 @@ export default class ArsenalHinzufuegenScreen extends Component {
     pulverBezeichnung: '', pulverPreis: '', pulverNotizen: ''
   }
 
-
   //Setze State aus Geschoss-HinzufügenScreen:
   handleGeschossBezeichnung = (text) => {this.setState({ geschossBezeichnung: text })}
   handleGeschossKaliber = (text) => {this.setState({ geschossKaliber: text })}
@@ -52,7 +51,6 @@ export default class ArsenalHinzufuegenScreen extends Component {
   handlePulverPreis = (text) => {this.setState({ pulverPreis: text })}
   handlePulverNotizen = (text) => {this.setState({ pulverNotizen: text })}
 
-
   renderGeschosse(){
     return(
       <ScrollView style={styles.scrollview} contentContainerStyle={styles.scrollviewcontainer}>
@@ -70,14 +68,14 @@ export default class ArsenalHinzufuegenScreen extends Component {
                 placeholder = "Kaliber z.B: .308Win"
                 placeholderTextColor = "#9a73ef"
                 autoCapitalize = "none"
-                onChangeText = {this.handleGeschossBezeichnung}/>
+                onChangeText = {this.handleGeschossKaliber}/>
                             
               <TextInput style = {styles.input}
                 underlineColorAndroid = "transparent"
                 placeholder = "Gewicht in Grain z.B: 168"
                 placeholderTextColor = "#9a73ef"
                 autoCapitalize = "none"
-                onChangeText = {this.handleGeschossKaliber}/>
+                onChangeText = {this.handleGeschossGewicht}/>
 
               <TextInput style = {styles.input}
                 underlineColorAndroid = "transparent"
@@ -104,7 +102,6 @@ export default class ArsenalHinzufuegenScreen extends Component {
                   geschossDatensatz.bc = this.state.geschossBc;
                   geschossDatensatz.preis = this.state.geschossPreis;
                   geschossDatensatz.bild = {uri: 'https://png.pngtree.com/svg/20161205/bullet_561433.png'};
-                  //datenInDBSpeichern("geschosse", geschossDatensatz);
                   DatenInDBSpeichern(geschossDatensatz);
                   alert("hier zurückspringen");
                   this.props.navigation.navigate('ArsenalSubMenueScreen')
@@ -188,7 +185,6 @@ export default class ArsenalHinzufuegenScreen extends Component {
     );
   }
 
-
   renderPulver(){
     return(
       <ScrollView style={styles.scrollview} contentContainerStyle={styles.scrollviewcontainer}>
@@ -236,7 +232,6 @@ export default class ArsenalHinzufuegenScreen extends Component {
       </ScrollView>
     );
   }
-
 
 
   render() {
@@ -287,8 +282,6 @@ export default class ArsenalHinzufuegenScreen extends Component {
       </View>
 
     );
-    
-
   }
 }
 

@@ -176,6 +176,25 @@ function testDatenInDBErzeugen() {
   }
 }
 
+function gibtEsEintragBereitsInDB(tabellenname, bezeichnung){
+  console.log(
+    "DataContext.gibtEsEintragBereitsInDB: Prüfe in Tabelle: "+
+      tabellenname +" bereits Bezeichnung: " +bezeichnung);
+
+  database.transaction(tx => {
+    //tx.executeSql("select * from "+tabellenname +" Where kaliber = "+bezeichnung, [], (_, { rows }) => {
+    tx.executeSql("select * from "+tabellenname+" Where bezeichnung = '"+bezeichnung+"'", [], (_, { rows }) => {
+      console.log(
+        "DataContext.gibtEsEintragBereitsInDB: Es gibt in Tabelle: "+
+          tabellenname +" bereits Bezeichnung: " +bezeichnung
+      );
+      return true;
+    });
+  });
+  return false;
+}
+
+
 function speichereDatensatz(datenObject) {
   // console.log(
   //   "DataContext - Funktion speichere einzelnen Datensatz:" +
@@ -185,21 +204,37 @@ function speichereDatensatz(datenObject) {
         tx => {
             switch(datenObject.datensatztyp) {
                 case 'Geschoss':
+                    if(gibtEsEintragBereitsInDB("geschosse", datenObject.bezeichnung)){
+                      alert("Bezeichner bereits in Datenbank! Bitte anderen wählen!");
+                      return;
+                    }
                     tx.executeSql('insert into geschosse (datensatztyp, bezeichnung, kaliber, gewicht, bc, preis, bild) values (?, ?, ?, ?, ?, ?, ?)', 
                     [datenObject.datensatztyp, datenObject.bezeichnung, datenObject.kaliber, datenObject.gewicht, datenObject.bc, datenObject.preis, datenObject.bild] );
                     console.log('Erzeuge Geschoss DB Eintrag: '+datenObject.datensatztyp +' - '+datenObject.bezeichnung+' - '+datenObject.kaliber+' - '+datenObject.gewicht,+' - '+datenObject.bc+' - '+datenObject.preis+' - '+datenObject.bild);
                     break;
                 case 'Huelse':
+                    if(gibtEsEintragBereitsInDB("huelsen", datenObject.bezeichnung)){
+                      alert("Bezeichner bereits in Datenbank! Bitte anderen wählen!");
+                      return;
+                    }
                     tx.executeSql('insert into huelsen (datensatztyp, bezeichnung, kaliber, laenge, gewicht, anzahlWiedergeladen, preis, bild) values (?, ?, ?, ?, ?, ?, ?, ?)', 
                     [datenObject.datensatztyp, datenObject.bezeichnung, datenObject.kaliber,  datenObject.laenge, datenObject.gewicht, datenObject.anzahlWiedergeladen, datenObject.preis, datenObject.bild] );
                     console.log('Erzeuge Huelse DB Eintrag: '+datenObject.datensatztyp +' - '+datenObject.bezeichnung+' - '+datenObject.kaliber+' - '+datenObject.laenge+' - ' +datenObject.gewicht+ ' - ' +datenObject.anzahlWiedergeladen +' - '+datenObject.preis+' - '+datenObject.bild);
                     break;
                 case 'Pulver':
+                    if(gibtEsEintragBereitsInDB("pulver", datenObject.bezeichnung)){
+                      alert("Bezeichner bereits in Datenbank! Bitte anderen wählen!");
+                      return;
+                    }
                     tx.executeSql('insert into pulver (datensatztyp, bezeichnung, notizen, preis, bild) values (?, ?, ?, ?, ?)', 
                     [datenObject.datensatztyp, datenObject.bezeichnung, datenObject.notizen, datenObject.preis, datenObject.bild] );
                     console.log('Erzeuge Pulver DB Eintrag: '+datenObject.datensatztyp +' - '+datenObject.bezeichnung+' - ' +datenObject.notizen+' - '+datenObject.preis+' - '+datenObject.bild);
                     break;
                 case 'Laborierung':
+                    if(gibtEsEintragBereitsInDB("laborierungen", datenObject.bezeichnung)){
+                      alert("Bezeichner bereits in Datenbank! Bitte anderen wählen!");
+                      return;
+                    }
                     tx.executeSql('insert into laborierungen (datensatztyp, bezeichnung, geschossID, huelseID, zuenderID, pulverID, beschichtungID, oal, notizen, preis, fertiggestellt, bild, streukreis, trefferbild) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
                     [datenObject.datensatztyp, datenObject.bezeichnung, datenObject.geschossID, datenObject.huelseID, datenObject.zuenderID, datenObject.pulverID, datenObject.beschichtungID, datenObject.oal, datenObject.notizen, datenObject.preis, datenObject.fertiggestellt, datenObject.bild, datenObject.streukreis, datenObject.trefferbild] );
                     console.log('Erzeuge Laborierung DB Eintrag: '+datenObject.datensatztyp +' - '+datenObject.bezeichnung+' - '+datenObject.geschossID+' - '+datenObject.huelseID+' - '+datenObject.beschichtungID+' - '+datenObject.oal+' - '+datenObject.pulverID+' - '+datenObject.beschichtungID+' - '+datenObject.notizen+' - '+datenObject.preis+' - '+datenObject.fertiggestellt+' - '+datenObject.bild+' - '+datenObject.streukreis+' - '+datenObject.trefferbild);
@@ -210,14 +245,13 @@ function speichereDatensatz(datenObject) {
         },
         null
     );
-
 }
 
 function ladeDBdaten(tabellenname, callback) {
 
-  if (tabellenname = "laborierungen"){
+  if (tabellenname == "laborierungen"){
     console.log("Context.ladeDBdaten soll Laborierungen laden, deshalb wird es an Methode ladeLaborierungen weiter delegiert, denn Laborierungen müssen aus mehreren Tabellen zusammengebaut werden!");
-    this.ladeLaborierungen(callback); //Callback wird weitergegeben
+    this.ladeLaborierungen(this.callback); //Callback wird weitergegeben
   }
 
   //console.log("Lade Tabellenname: "+tabellenname);
@@ -296,7 +330,7 @@ function ladeLaborierungen(callback){
 
 function ladeFertigeLaborierungen(callback) {
   //console.log("DATA-Context: Lade Fertige Laborierungen aus Datenbank");
-  const tabellenname = "laborierungen"; //Frage: aus Tabelle laborierungen kann nichts geladen werden. Mit Tabelle geschosse funktioniert es allerdings!
+  const tabellenname = "laborierungen"; 
 
   database.transaction(tx => {
     tx.executeSql("select * from " + tabellenname, [], (_, { rows }) => {
@@ -333,10 +367,6 @@ function löscheZeile(tabellenname, bezeichnung) {
 }
 
 export default class DataContext {
-  // myVariable = 123; //Instanzvariable
-  // constructor() {
-  //   this.variable = 5678; //Instanzvariable über Konstruktur - JS-Standard
-  // }
 
   InitialisiereDatenbak() {
     loescheTabelle('geschosse');
@@ -371,6 +401,13 @@ export default class DataContext {
 
   ladeFertigeLaborierungen(callback) {
     return ladeFertigeLaborierungen(callback);
+  }
+
+  aktualisiereDatensatz(tabellenname, datenObject){
+    //TODO: gegen SQLInjection sichern
+    console.log("Update DB-Tabelle: "+tabellenname+" mit Datensatz: "+JSON.stringify(datenObject));
+    loescheDatensatz(tabellenname, datenObject);
+    speichereDatensatz(datenObject)
   }
 
   ladeFertigeLaborierungen_Mock(callback) {
@@ -533,6 +570,7 @@ export default class DataContext {
         preis: "1,22",
         fertiggestellt: true,
         bild: "http://icons.iconarchive.com/icons/icons8/windows-8/256/Military-Ammo-Tin-icon.png",
+        streukreis: "",
         trefferbild: ""
       },
       {
@@ -548,6 +586,7 @@ export default class DataContext {
         preis: "0,71",
         fertiggestellt: false,
         bild: { uri: "http://icons.iconarchive.com/icons/icons8/windows-8/256/Military-Ammo-Tin-icon.png" },
+        streukreis: "",
         trefferbild: ""
       },
       {
@@ -563,9 +602,57 @@ export default class DataContext {
         preis: "0,49",
         fertiggestellt: false,
         bild: { uri: "http://icons.iconarchive.com/icons/icons8/windows-8/256/Military-Ammo-Tin-icon.png" },
+        streukreis: "",
         trefferbild: ""
       }
     ];
     return callback(laborierungTestdaten);
   }
+
+
+
+  ladeMOCKSchießstandDaten(callback) {
+    var schießsstandTestdaten = [
+      {
+        datensatztyp: "Schießsstand",
+        bezeichnung: "Polizeistand Stuttgart 25m",
+        value: "Polizeistand Stuttgart 25m",
+      },
+      {
+        datensatztyp: "Schießsstand",
+        bezeichnung: "Bundeswehr Stetten 1200m",
+        value: "Bundeswehr Stetten 1200m",
+      },
+      {
+        datensatztyp: "Schießsstand",
+        bezeichnung: "Schützenhaus 100m",
+        value: "Schützenhaus 100m",
+      }
+    ];
+    return callback(schießsstandTestdaten);
+  }
+
+  
+  ladeMOCKWaffenDaten(callback) {
+    var waffenTestdaten = [
+      {
+        datensatztyp: "Waffe",
+        bezeichnung: "Voere M2",
+        value: "Voere M2",
+      },
+      {
+        datensatztyp: "Waffe",
+        bezeichnung: "Remington 700 24Zoll",
+        value: "Remington 700 24Zoll",
+      },
+      {
+        datensatztyp: "Waffe",
+        bezeichnung: "CZ75 Viper",
+        value: "CZ75 Viper",
+      }
+    ];
+    return callback(waffenTestdaten);
+  }
+
+
 }
