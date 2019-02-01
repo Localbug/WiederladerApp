@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View, CheckBox } from 'react-native';
 
 //Laborierung Kurzansicht für ListenView
 export default function(props) {
@@ -17,6 +17,12 @@ export default function(props) {
             {ausgewaehlteLaborierung.bezeichnung}
           </Text>
           <Text style={styles.smallText}> {ausgewaehlteLaborierung.geschoss.bezeichnung} </Text>
+          <Text style={styles.smallText}> Streukreis:{ausgewaehlteLaborierung.streukreis} </Text> 
+          <View style={{flexDirection:'row'}}>
+            <Text style={styles.smallText}> Fertiggestellt:</Text> 
+            <CheckBox title='Fertiggestellt' value={ausgewaehlteLaborierung.fertiggestellt} disabled={true}/>
+          </View>
+          <Text style={styles.smallText}> Anzahl:{ausgewaehlteLaborierung.anzahl} </Text> 
         </View>
       </View>
     </TouchableOpacity>

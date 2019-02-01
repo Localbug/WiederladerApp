@@ -29,7 +29,7 @@ function erzeugeTabellen() {
         console.log("Tabelle pulver erzeugt");
 
         tx.executeSql(
-          'create table if not exists laborierungen (id integer primary key not null, datensatztyp text, bezeichnung text, geschossID Integer, huelseID Integer, zuenderID Integer, pulverID Integer, beschichtungID Integer, oal real, notizen text, preis real, fertiggestellt integer, bild blob, streukreis real, trefferbild blob);'
+          'create table if not exists laborierungen (id integer primary key not null, datensatztyp text, bezeichnung text, geschossID Integer, huelseID Integer, zuenderID Integer, pulverID Integer, beschichtungID Integer, oal real, notizen text, preis real, fertiggestellt integer, anzahl integer, bild blob, streukreis real, trefferbild blob);'
         );
         console.log("Tabelle laborierungen erzeugt");
     });
@@ -124,6 +124,7 @@ function testDatenInDBErzeugen() {
       notizen: "wird schnell heiss",
       preis: "1,22",
       fertiggestellt: true,
+      anzahl: 20,
       bild: "http://icons.iconarchive.com/icons/icons8/windows-8/256/Military-Ammo-Tin-icon.png",
       streukreis: 15.0,
       trefferbild: ""
@@ -140,6 +141,7 @@ function testDatenInDBErzeugen() {
       notizen: "versuch mit pressladung",
       preis: "0,71",
       fertiggestellt: false,
+      anzahl: 10,
       bild: { uri: "http://icons.iconarchive.com/icons/icons8/windows-8/256/Military-Ammo-Tin-icon.png" },
       streukreis: "",
       trefferbild: ""
@@ -156,6 +158,7 @@ function testDatenInDBErzeugen() {
       notizen: "günstige Komponenten",
       preis: "0,45",
       fertiggestellt: true,
+      anzahl: 50,
       bild: { uri: "http://icons.iconarchive.com/icons/icons8/windows-8/256/Military-Ammo-Tin-icon.png" },
       streukreis: 28.5,
       trefferbild: ""
@@ -235,9 +238,9 @@ function speichereDatensatz(datenObject) {
                       alert("Bezeichner bereits in Datenbank! Bitte anderen wählen!");
                       return;
                     }
-                    tx.executeSql('insert into laborierungen (datensatztyp, bezeichnung, geschossID, huelseID, zuenderID, pulverID, beschichtungID, oal, notizen, preis, fertiggestellt, bild, streukreis, trefferbild) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
-                    [datenObject.datensatztyp, datenObject.bezeichnung, datenObject.geschossID, datenObject.huelseID, datenObject.zuenderID, datenObject.pulverID, datenObject.beschichtungID, datenObject.oal, datenObject.notizen, datenObject.preis, datenObject.fertiggestellt, datenObject.bild, datenObject.streukreis, datenObject.trefferbild] );
-                    console.log('Erzeuge Laborierung DB Eintrag: '+datenObject.datensatztyp +' - '+datenObject.bezeichnung+' - '+datenObject.geschossID+' - '+datenObject.huelseID+' - '+datenObject.beschichtungID+' - '+datenObject.oal+' - '+datenObject.pulverID+' - '+datenObject.beschichtungID+' - '+datenObject.notizen+' - '+datenObject.preis+' - '+datenObject.fertiggestellt+' - '+datenObject.bild+' - '+datenObject.streukreis+' - '+datenObject.trefferbild);
+                    tx.executeSql('insert into laborierungen (datensatztyp, bezeichnung, geschossID, huelseID, zuenderID, pulverID, beschichtungID, oal, notizen, preis, fertiggestellt, anzahl, bild, streukreis, trefferbild) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+                    [datenObject.datensatztyp, datenObject.bezeichnung, datenObject.geschossID, datenObject.huelseID, datenObject.zuenderID, datenObject.pulverID, datenObject.beschichtungID, datenObject.oal, datenObject.notizen, datenObject.preis, datenObject.fertiggestellt, datenObject.anzahl, datenObject.bild, datenObject.streukreis, datenObject.trefferbild] );
+                    console.log('Erzeuge Laborierung DB Eintrag: '+datenObject.datensatztyp +' - '+datenObject.bezeichnung+' - '+datenObject.geschossID+' - '+datenObject.huelseID+' - '+datenObject.beschichtungID+' - '+datenObject.oal+' - '+datenObject.pulverID+' - '+datenObject.beschichtungID+' - '+datenObject.notizen+' - '+datenObject.preis+' - '+datenObject.fertiggestellt+' - '+datenObject.anzahl+" - "+datenObject.bild+' - '+datenObject.streukreis+' - '+datenObject.trefferbild);
                     break;
                 default:
                     console.log("Fehler in DataContext - Funktion speichere! Kein Case zu Tabellenname: "+datenObject.datensatztyp +' gefunden');
@@ -301,6 +304,7 @@ function ladeLaborierungen(callback){
           notizen: "Laborierung wurde generiert",
           preis: "0,75",
           fertiggestellt: true,
+          anzahl: 5,
           bild: { uri: "http://icons.iconarchive.com/icons/icons8/windows-8/256/Military-Ammo-Tin-icon.png" },
           streukreis: "",
           trefferbild: ""
@@ -329,15 +333,36 @@ function ladeLaborierungen(callback){
 
 
 function ladeFertigeLaborierungen(callback) {
-  //console.log("DATA-Context: Lade Fertige Laborierungen aus Datenbank");
-  const tabellenname = "laborierungen"; 
-
   database.transaction(tx => {
-    tx.executeSql("select * from " + tabellenname, [], (_, { rows }) => {
+    tx.executeSql("select * from laborierungen WHERE fertiggestellt = 1", [], (_, { rows }) => {
       console.log(
-        "DataContext - ladeDBdaten aus Tabelle:" +
-          tabellenname +
-          " - Ergebnis: " +
+        "DataContext - lade fertige Laborierungen aus DB:"+
+          JSON.stringify(rows._array)
+      );
+      callback(rows._array);
+    });
+  });
+}
+
+
+function ladeUnfertigeLaborierungen(callback) {
+  database.transaction(tx => {
+    tx.executeSql("select * from laborierungen WHERE fertiggestellt = 0", [], (_, { rows }) => {
+      console.log(
+        "DataContext - lade unfertige Laborierungen aus DB:"+
+          JSON.stringify(rows._array)
+      );
+      callback(rows._array);
+    });
+  });
+}
+
+
+function ladeLaborierungenSortiertNachStreukreis(callback) {
+  database.transaction(tx => {
+    tx.executeSql("select * from laborierungen ORDER BY streukreis DESC", [], (_, { rows }) => {
+      console.log(
+        "DataContext - lade Laborierungen sortiert nach Streukreis aus DB:"+
           JSON.stringify(rows._array)
       );
       callback(rows._array);
@@ -403,6 +428,15 @@ export default class DataContext {
     return ladeFertigeLaborierungen(callback);
   }
 
+  ladeUnfertigeLaborierungen(callback) {
+    return ladeUnfertigeLaborierungen(callback);
+  }
+
+  ladeLaborierungenSortiertNachStreukreis(callback) {
+    return ladeLaborierungenSortiertNachStreukreis(callback);
+  }
+
+
   aktualisiereDatensatz(tabellenname, datenObject){
     //TODO: gegen SQLInjection sichern
     console.log("Update DB-Tabelle: "+tabellenname+" mit Datensatz: "+JSON.stringify(datenObject));
@@ -452,6 +486,7 @@ export default class DataContext {
         notizen: "wird schnell heiss",
         preis: "1,22",
         fertiggestellt: true,
+        anzahl: 20,
         bild: "http://icons.iconarchive.com/icons/icons8/windows-8/256/Military-Ammo-Tin-icon.png",
         streukreis: 16.0,
         trefferbild: "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540anonymous%252FWiederladerApp-66a899d5-30e8-4956-9f4e-6c5dd4d4ec20/Camera/8b45a213-2524-4de3-a245-ee4e1d3a00cc.jpg",
@@ -469,6 +504,7 @@ export default class DataContext {
         notizen: "versuch mit pressladung",
         preis: "0,71",
         fertiggestellt: true,
+        anzahl: 30,
         bild: { uri: "http://icons.iconarchive.com/icons/icons8/windows-8/256/Military-Ammo-Tin-icon.png" },
         streukreis: 19.5,
         trefferbild: "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540anonymous%252FWiederladerApp-66a899d5-30e8-4956-9f4e-6c5dd4d4ec20/Camera/f6146b00-b89a-4d98-a594-9706c0fb0b67.jpg"
@@ -485,6 +521,7 @@ export default class DataContext {
         notizen: "günstiger Preis",
         preis: "0,45",
         fertiggestellt: true,
+        anzahl: 50,
         bild: { uri: "http://icons.iconarchive.com/icons/icons8/windows-8/256/Military-Ammo-Tin-icon.png" },
         streukreis: 20.5,
         trefferbild: "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540anonymous%252FWiederladerApp-66a899d5-30e8-4956-9f4e-6c5dd4d4ec20/Camera/7d9142eb-4c50-42d8-a15a-529b69512aad.jpg"
@@ -501,6 +538,7 @@ export default class DataContext {
         notizen: "günstiger Preis",
         preis: "0,75",
         fertiggestellt: true,
+        anzahl: 50,
         bild: { uri: "http://icons.iconarchive.com/icons/icons8/windows-8/256/Military-Ammo-Tin-icon.png" },
         streukreis: "",
         trefferbild: ""
@@ -517,6 +555,7 @@ export default class DataContext {
         notizen: "stärker geladen",
         preis: "0,75",
         fertiggestellt: true,
+        anzahl: 40,
         bild: { uri: "http://icons.iconarchive.com/icons/icons8/windows-8/256/Military-Ammo-Tin-icon.png" },
         streukreis: "",
         trefferbild: ""
@@ -569,8 +608,9 @@ export default class DataContext {
         notizen: "wird schnell heiss",
         preis: "1,22",
         fertiggestellt: true,
+        anzahl: 35,
         bild: "http://icons.iconarchive.com/icons/icons8/windows-8/256/Military-Ammo-Tin-icon.png",
-        streukreis: "",
+        streukreis: "16,5",
         trefferbild: ""
       },
       {
@@ -581,10 +621,28 @@ export default class DataContext {
         zuender: zuender,
         pulver: pulver,
         beschichtung: beschichtung,
+        oal: "72,5",
+        notizen: "versuch mit pressladung",
+        preis: "0,68",
+        fertiggestellt: true,
+        anzahl: 10,
+        bild: { uri: "http://icons.iconarchive.com/icons/icons8/windows-8/256/Military-Ammo-Tin-icon.png" },
+        streukreis: "28.0",
+        trefferbild: ""
+      },
+      {
+        datensatztyp: "Laborierung",
+        bezeichnung: "Versuchslaborierung2",
+        geschoss: geschoss2,
+        huelse: huelse,
+        zuender: zuender,
+        pulver: pulver,
+        beschichtung: beschichtung,
         oal: "73,1",
         notizen: "versuch mit pressladung",
         preis: "0,71",
         fertiggestellt: false,
+        anzahl: 15,
         bild: { uri: "http://icons.iconarchive.com/icons/icons8/windows-8/256/Military-Ammo-Tin-icon.png" },
         streukreis: "",
         trefferbild: ""
@@ -601,6 +659,7 @@ export default class DataContext {
         notizen: "günstiger Preis",
         preis: "0,49",
         fertiggestellt: false,
+        anzahl: 50,
         bild: { uri: "http://icons.iconarchive.com/icons/icons8/windows-8/256/Military-Ammo-Tin-icon.png" },
         streukreis: "",
         trefferbild: ""

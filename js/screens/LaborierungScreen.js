@@ -17,19 +17,33 @@ export default class LaborierungScreen extends Component {
 
   state = { data: [], isLoading: true };
 
+  _ladeDatenausDB(){
+    db.ladeDaten('laborierungen', ergebnis => {
+      console.log("!Geladene Laborierung: "+JSON.stringify(ergebnis));
+      this.setState({data: ergebnis,  isLoading: false })
+    });
+  }
 
-_ladeDatenausDB(){
-  db.ladeDaten('laborierungen', ergebnis => {
-    console.log("!Geladene Laborierung: "+JSON.stringify(ergebnis));
-    this.setState({data: ergebnis,  isLoading: false })
-  });
-}
+  _ladeLaborierungDatenAusDB_MOCK(){
+    db = new DBContext();
+    db.ladeMOCKLaborierungsDaten(ergebnis => this.setState({data: ergebnis,  isLoading: false }));
+    console.log('Laborierungen geladen und in State gesetzt: '+JSON.stringify(this.state.data));
+  };
 
-_ladeLaborierungDatenAusDB_MOCK(){
-  db = new DBContext();
-  db.ladeMOCKLaborierungsDaten(ergebnis => this.setState({data: ergebnis,  isLoading: false }));
-  console.log('Laborierungen geladen und in State gesetzt: '+JSON.stringify(this.state.data));
-};
+
+  _ladeUnfertigeLaborierungenausDB(){
+    db.ladeUnfertigeLaborierungen(ergebnis => {
+      console.log("!Geladene unfertige Laborierungen: "+JSON.stringify(ergebnis));
+      this.setState({data: ergebnis,  isLoading: false })
+    });
+  }
+
+  _ladeSortierteLaborierungenausDB(){
+    db.ladeLaborierungenSortiertNachStreukreis(ergebnis => {
+      console.log("!Geladene und geordnete Laborierungen: "+JSON.stringify(ergebnis));
+      this.setState({data: ergebnis,  isLoading: false })
+    });
+  }
 
   _refresh = () => {
     this.setState({ isLoading: true });
@@ -55,13 +69,34 @@ _ladeLaborierungDatenAusDB_MOCK(){
       <View style={styles.container}>
         <View style= {{position: 'absolute', top:30, right:5}}>
           <Button
-            title= "neue erstellen"
+            title= "    neue erstellen     "
             onPress={() =>
-                  this.props.navigation.navigate('LaborierungHinzufügenScreen', {
-                    //ausgewaehltesArsenalMenue: ausgewaehltesArsenalMenue,
-                  })}
+                  this.props.navigation.navigate('LaborierungHinzufügenScreen', {})
+            }
           />
         </View>
+
+        <View style= {{position: 'absolute', top:70, left:5}}>
+          <Button
+            title= "bester Streukreis"
+            onPress={() => {
+              this.setState({isLoading: true });
+              this._ladeSortierteLaborierungenausDB();
+              this.props.navigation.navigate('LaborierenScreen');
+            }}
+          />
+        </View>
+        <View style= {{position: 'absolute', top:70, right:5}}>
+          <Button
+            title= "unfertige anzeigen"
+            onPress={() => {
+              this.setState({isLoading: true });
+              this._ladeUnfertigeLaborierungenausDB();
+              this.props.navigation.navigate('LaborierenScreen');
+            }}
+          />
+        </View>
+
 
         <View style= {{position: 'absolute', top:100}}>
           <FlatList
