@@ -1,4 +1,5 @@
 import { SQLite } from "expo";
+//import { join } from "path";
 
 const database = SQLite.openDatabase("testdb2.db");
 
@@ -8,6 +9,28 @@ function loescheTabelle(tabellenname) {
     tx.executeSql("DROP TABLE " + tabellenname);
     console.log("loescheTabelle: " + tabellenname);
   });
+}
+
+function löscheZeile(tabellenname, bezeichnung) {
+  // console.log(
+  //   "DataContext - Funktion löscheZeile: Es wird in Tabelle: " +
+  //     tabellenname +
+  //     " der Datensatz mit Bezeichner: " +
+  //     bezeichnung +
+  //     " gelöscht!"
+  // );
+  //TODO: gegen SQL Injection absichern
+  database.transaction(tx => {
+    tx.executeSql(
+      "DELETE FROM " + tabellenname + " WHERE bezeichnung=" + bezeichnung,
+      [],
+      (_, { rows }) => {
+        console.log(
+          "Aus Tabelle: " + tabellenname + " wurde ID:" + bezeichnung + " gelöscht!"
+        );
+      }
+    );
+  }, null);
 }
 
 function erzeugeTabellen() {
@@ -271,65 +294,105 @@ function ladeDBdaten(tabellenname, callback) {
   });
 }
 
-function ladeLaborierungen(callback){
 
+function ladeWhereClauseAusDB(tabellenname, WhereClause, callback) {
+
+  console.log("Context.ladeWhereClauseAusDB soll aus Tabelle: "+tabellenname+" WhereClause: "+WhereClause+ " laden.");
+
+  database.transaction(tx => {
+    tx.executeSql("select * from " +tabellenname +"WHERE "+WhereClause +";", [], (_, { rows }) => {
+      console.log(
+        "DataContext.ladeWhereClauseAusDB - aus Tabelle: "+tabellenname+" wurde über WhereClause: "+WhereClause+ " folgender Datensatz geladen: "+
+          JSON.stringify(rows._array)
+      );
+      callback(rows._array);
+    });
+  });
+}
+
+function berechnePatronenPreis(laborierung){
+  let huelsenPreis = laborierung.huelse.preis/15;
+
+  let PulverPreis = laborierung.pulver.preis/100/15.4324 
+  PulverPreis = PulverPreis * laborierung.pulver.gewicht; //Preis je 100g -> 1g = 15,4324gr
+
+  laborierung.preis = laborierung.geschoss.preis + huelsenPreis + PulverPreis +zuender.preis
+
+  return laborierung.preis;
+}
+
+
+function ladeReferenzenInLaborierung(laborierung, callback){
+
+  let suchBedingung;
+  suchBedingung = "bezeichnung = '"+laborierung.geschossID+"'";
+  this.ladeWhereClauseAusDB("geschosse", suchBedingung, result => (laborierung.geschoss = result));
+
+  suchBedingung = "bezeichnung = '"+laborierung.huelsenID+"'";
+  this.ladeWhereClauseAusDB("huelsen", suchBedingung, result => (laborierung.huelse = result));
+
+  suchBedingung = "bezeichnung = '"+laborierung.pulverID+"'";
+  this.ladeWhereClauseAusDB("pulver", suchBedingung, result => (laborierung.pulver = result));
+
+  suchBedingung = "bezeichnung = '"+laborierung.zuenderID+"'";
+  this.ladeWhereClauseAusDB("zuender", suchBedingung, result => (laborierung.zuender = result));
+
+  suchBedingung = "bezeichnung = '"+laborierung.beschichtungID+"'";
+  this.ladeWhereClauseAusDB("beschichtungen", suchBedingung, result => (laborierung.beschichtung = result));
+
+  console.log("DataContext.ladeReferenzenInLaborierung hat Laborierung erstellt: "+JSON.stringify(laborierung));
+  callback(laborierung);
+}
+
+
+function ladeLaborierungen(callback){
   let laborierungsarray;
-  console.log("ladeLaborierungen: Hier wird nun laborierung gesucht.. ");
+  console.log("ladeLaborierungen: Hier wird Laborierung gesucht.. und aus Referenzen zusammengebaut");
 
   database.transaction(tx => {
     tx.executeSql("select * from laborierungen", [], (_, { rows }) => {
       console.log("DataContext - erstelleLaborierung läd Laborierungsgrundgerüst:"+JSON.stringify(rows._array));
 
-      //Für jeden einzelnen LaborierungsDatensatz die Untertabellen laden und als Object einfügen
+      //Für jeden einzelnen LaborierungsDatensatz, die Untertabellen laden und als Object einfügen
       for (var i = 0; i = rows._array.length; i++) {
-        
         let laborierung = rows._array[i];
-        let laborierungsGeschoss;
+        
+        this.ladeReferenzenInLaborierung( laborierung, function(result){this.laborierung = result;})
 
-        geschoss1 = new Object();
-        geschoss1.bezeichnung = "Sierra Match King 168er";
-        geschoss1.kaliber = "308WIN";
-        geschoss1.gewicht = "168";
+        laborierung.preis = berechnePatronenPreis(laborierung); //Patronenpreis aus Komponenten berechnen
+
+        // let laborierungsGeschoss;
+        // geschoss = new Object();
+        // geschoss.bezeichnung = "Sierra Match King 168er";
+        // geschoss.kaliber = "308WIN";
+        // geschoss.gewicht = "168";
   
-        let labo =  
-        {
-          datensatztyp: "Laborierung",
-          bezeichnung: "ErstellteLabo",
-          geschoss: geschoss1,
-          huelse: geschoss1,
-          zuender: geschoss1,
-          pulver: geschoss1,
-          beschichtung: geschoss1,
-          oal: "73,0",
-          notizen: "Laborierung wurde generiert",
-          preis: "0,75",
-          fertiggestellt: true,
-          anzahl: 5,
-          bild: { uri: "http://icons.iconarchive.com/icons/icons8/windows-8/256/Military-Ammo-Tin-icon.png" },
-          streukreis: "",
-          trefferbild: ""
-        }
-
-        console.log("zusammengebaute Labo in Array Pushen: "+JSON.stringify(labo));
-        laborierungsarray.push(labo);
-
-        // //Geschossdaten dazu laden:
-        // database.transaction(tx => {
-        //   tx.executeSql("select * from geschosse where id = 1", [], (_, { rows }) => { //TODO: id dynamisch machen, irgenwo muss die id ja her kommen..
-        //     let geschoss = rows._array;
-        //     console.log("DataContext - erstelleLaborierung läd aus geschosse Datendatz:"+JSON.stringify(geschoss));
-        //     laborierungsGeschoss = geschoss;
-        //   });
-        // });
-
+        // let laborierung =  
+        // {
+        //   datensatztyp: "Laborierung",
+        //   bezeichnung: "ErstellteLabo",
+        //   geschoss: geschoss,
+        //   huelse: huelse,
+        //   zuender: zuender,
+        //   pulver: pulver,
+        //   beschichtung: beschichtung,
+        //   oal: "73,0",
+        //   notizen: "Laborierung wurde generiert",
+        //   preis: "0,75",
+        //   fertiggestellt: true,
+        //   anzahl: 5,
+        //   bild: { uri: "http://icons.iconarchive.com/icons/icons8/windows-8/256/Military-Ammo-Tin-icon.png" },
+        //   streukreis: "",
+        //   trefferbild: ""
+        // }
+        console.log("zusammengebaute Labo in Array Pushen: "+JSON.stringify(laborierung));
+        laborierungsarray.push(laborierung);
       }
-  
     })
   })
   console.log("laborierungsarray: "+JSON.stringify(laborierungsarray));
   callback(laborierungsarray);
 };
-
 
 
 function ladeFertigeLaborierungen(callback) {
@@ -338,6 +401,7 @@ function ladeFertigeLaborierungen(callback) {
       console.log(
         "DataContext - lade fertige Laborierungen aus DB:"+
           JSON.stringify(rows._array)
+          //TODO: Laborierungen aus Referenzen zusammenbauen
       );
       callback(rows._array);
     });
@@ -351,6 +415,7 @@ function ladeUnfertigeLaborierungen(callback) {
       console.log(
         "DataContext - lade unfertige Laborierungen aus DB:"+
           JSON.stringify(rows._array)
+          //TODO: Laborierungen aus Referenzen zusammenbauen
       );
       callback(rows._array);
     });
@@ -364,32 +429,14 @@ function ladeLaborierungenSortiertNachStreukreis(callback) {
       console.log(
         "DataContext - lade Laborierungen sortiert nach Streukreis aus DB:"+
           JSON.stringify(rows._array)
+          //TODO: Laborierungen aus Referenzen zusammenbauen
       );
       callback(rows._array);
     });
   });
 }
 
-function löscheZeile(tabellenname, bezeichnung) {
-  // console.log(
-  //   "DataContext - Funktion löscheZeile: Es wird in Tabelle: " +
-  //     tabellenname +
-  //     " der Datensatz mit Bezeichner: " +
-  //     bezeichnung +
-  //     " gelöscht!"
-  // );
-  database.transaction(tx => {
-    tx.executeSql(
-      "DELETE FROM " + tabellenname + " WHERE bezeichnung=" + bezeichnung,
-      [],
-      (_, { rows }) => {
-        console.log(
-          "Aus Tabelle: " + tabellenname + " wurde ID:" + bezeichnung + " gelöscht!"
-        );
-      }
-    );
-  }, null);
-}
+
 
 export default class DataContext {
 

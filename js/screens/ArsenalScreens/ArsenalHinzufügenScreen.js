@@ -288,9 +288,7 @@ export default class ArsenalHinzufuegenScreen extends Component {
 const styles = StyleSheet.create({
   
   scrollviewcontainer: {
-    alignItems: 'center',
     justifyContent: 'center',
-    padding: 20
   },
   scrollview: {
     backgroundColor: '#fff'
@@ -298,7 +296,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingTop: 30
+    paddingTop: 5
   },
   section: {
     backgroundColor: 'whitesmoke',
