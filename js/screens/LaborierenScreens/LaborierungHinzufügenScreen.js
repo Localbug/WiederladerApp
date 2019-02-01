@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {Button, TextInput, TouchableOpacity, ScrollView, StyleSheet, Text, CheckBox, View } from 'react-native';
+import NumericInput from 'react-native-numeric-input'
 import DBContext from '../../../js/DataContext';
 
 
@@ -29,7 +30,7 @@ export default class LaborierungHinzufuegenScreen extends Component {
   state = {
     ausgewaehltesArsenalMenue: ({ navigation }) => {navigation.getParam('ausgewaehltesArsenalMenue')},
     laborierungBezeichnung: '', geschossDatensatz: '', huelsenDatensatz: '', pulverDatensatz: '', zuenderDatensatz: '',
-    beschichtungDatensatz: '', oAL: '', notizen: '', fertiggestellt: false
+    beschichtungDatensatz: '', oAL: '', anzahl: '', notizen: '', fertiggestellt: false
   }
 
 
@@ -56,6 +57,7 @@ export default class LaborierungHinzufuegenScreen extends Component {
     this.setState({ beschichtungDatensatz: text })
   }
   handleLaborierungoAL = (text) => {this.setState({ oAL: text })}
+  handleLaborierungAnzahl = (text) => {this.setState({ anzahl: text })}
   handleLaborierungNotizen = (text) => {this.setState({ notizen: text })}
 
   renderLaborierungHinzufuegenScreen(){
@@ -112,14 +114,48 @@ export default class LaborierungHinzufuegenScreen extends Component {
                 autoCapitalize = "none"
                 onChangeText = {this.handleLaborierungoAL}/>
 
-              <TextInput style = {styles.input}
+
+              <View style={{
+                flex: 1,
+                flexDirection: 'row',
+                padding: 10
+              }}>
+                  <Text style={{fontSize: 18}}>  Anzahl:   </Text>
+                  <NumericInput 
+                    initValue = {20}
+                    onChange={value => {console.log(value); this.state.anzahl = value; }}
+                    totalWidth={120} 
+                    totalHeight={40} 
+                    iconSize={25}
+                    step={5}
+                    valueType='integer'
+                    rounded 
+                    textColor='#7a42f4' 
+                    iconStyle={{ color: 'white' }} 
+                    rightButtonBackgroundColor='#7a42f4' 
+                    leftButtonBackgroundColor='#7a92f4'/>
+              </View>
+
+              <View style={styles.textAreaContainer} >
+                  <Text>Laborierung-Notizen:</Text>
+                  <TextInput
+                    style={styles.textArea}
+                    underlineColorAndroid="transparent"
+                    //placeholder= {laborierung.notizen}
+                    placeholderTextColor="grey"
+                    numberOfLines={5}
+                    multiline={true}
+                    onChange={this.handleLaborierungNotizen}
+                  />
+              </View>
+
+              {/* <TextInput style = {styles.input}
                 underlineColorAndroid = "transparent"
                 placeholder = "Notizen zur Laborierung"
                 placeholderTextColor = "#9a73ef"
                 autoCapitalize = "none"
-                onChangeText = {this.handleLaborierungNotizen}/>
+                onChangeText = {this.handleLaborierungNotizen}/> */}
 
-              
               <View style={{ flexDirection: 'row', backgroundColor: '#7a42f4', left: 15 }}>
                 <CheckBox
                   value={this.state.fertiggestellt}
@@ -136,17 +172,19 @@ export default class LaborierungHinzufuegenScreen extends Component {
                 onPress={(item) =>{
                   const laborierungDatensatz = new Object;
                   laborierungDatensatz.datensatztyp = 'Laborierung'; //"geschosse";
-                  laborierungDatensatz.bezeichnung = this.state.geschossBezeichnung;
-                  laborierungDatensatz.kaliber = this.state.geschossKaliber;
-                  laborierungDatensatz.gewicht = this.state.geschossGewicht;
-                  laborierungDatensatz.bc = this.state.geschossBc;
-                  laborierungDatensatz.preis = this.state.geschossPreis;
+                  laborierungDatensatz.bezeichnung = this.state.laborierungBezeichnung;
+                  laborierungDatensatz.geschossDatensatz = this.state.geschossDatensatz;
+                  laborierungDatensatz.huelsenDatensatz = this.state.huelsenDatensatz;
+                  laborierungDatensatz.pulverDatensatz = this.state.pulverDatensatz;
+                  laborierungDatensatz.zuenderDatensatz = this.state.zuenderDatensatz;
+                  laborierungDatensatz.beschichtungDatensatz = this.state.beschichtungDatensatz;
+                  laborierungDatensatz.oAL = this.state.oAL;
                   laborierungDatensatz.fertiggestellt = this.state.fertiggestellt;
+                  laborierungDatensatz.anzahl = this.state.anzahl;
+                  laborierungDatensatz.notizen = this.state.notizen;
                   laborierungDatensatz.bild = {uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTelUVBNfFUlKOJ24E8_kO_dWNuHAUoAcV_VscC6OwBGMdSmWM4'};
-                  //datenInDBSpeichern("geschosse", geschossDatensatz);
-                  DatenInDBSpeichern(laborierungDatensatz);
-                  alert("hier zurückspringen");
-                  this.props.navigation.navigate('LaborierungsScreen')
+                  DatenInDBSpeichern(laborierungDatensatz); //Daten in DB speichern
+                  this.props.navigation.goBack(); //Ein Screen zurück springen   
                 }}>
                 <Text style = {styles.submitButtonText}> Hinzufügen </Text>
               </TouchableOpacity>
@@ -166,9 +204,11 @@ export default class LaborierungHinzufuegenScreen extends Component {
 const styles = StyleSheet.create({
   
   scrollviewcontainer: {
-    alignItems: 'center',
+    //flex: 1,
     justifyContent: 'center',
-    padding: 20
+    //alignItems: 'center',
+    //justifyContent: 'center',
+    //padding: 5
   },
   scrollview: {
     backgroundColor: '#fff'
@@ -176,7 +216,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingTop: 30
+    //paddingTop: 15
   },
   section: {
     backgroundColor: 'whitesmoke',
@@ -204,5 +244,10 @@ const styles = StyleSheet.create({
   },
   submitButtonText:{
       color: 'white'
-  }
+  },
+  textAreaContainer: {
+    borderColor: "grey",
+    borderWidth: 1,
+    padding: 10
+  },
 });

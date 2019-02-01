@@ -85,7 +85,7 @@ export default class LaborierungItemScreen extends Component {
                 alert("Damit wurde die Laborierung auf Status: 'Fertiggestellt' aktualisiert"); 
                 //this.DatenInDBAktualisieren(laborierung.bezeichnung) //TODO: Fertiggstellt Updaten
 
-                this.props.navigation.navigate('Schießstandscreen', {
+                this.props.navigation.navigate('SchießstandItemScreen', {
                       ausgewaehlteLaborierung: laborierung
                 })
               }
