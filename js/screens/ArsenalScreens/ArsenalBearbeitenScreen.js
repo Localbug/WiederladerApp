@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {Button, TextInput, TouchableOpacity, ScrollView, StyleSheet, Text, View } from 'react-native';
-import DBContext from '../../../js/DataContext';
+import DBContext from '../../DataContext';
 
 
 function SettingsItem(props) {
@@ -18,16 +18,16 @@ function DatenInDBSpeichern(datenObjekt) {
 }
 
 
-export default class ArsenalHinzufuegenScreen extends Component {
+export default class ArsenalBearbeitenScreen extends Component {
   static navigationOptions = ({ navigation }) => {
-    const ausgewaehltesArsenalMenue = navigation.getParam('ausgewaehltesArsenalMenue');
+    const ausgewaehltesArsenalItem = navigation.getParam('ausgewaehltesArsenalItem');
     return {
-      title: `${ausgewaehltesArsenalMenue.menueTitel} hinzufügen`
+      title: `${ausgewaehltesArsenalItem.bezeichnung} bearbeiten`
     };
   };
 
   state = {
-    ausgewaehltesArsenalMenue: ({ navigation }) => {navigation.getParam('ausgewaehltesArsenalMenue')},
+    ausgewaehltesArsenalItem: ({ navigation }) => {navigation.getParam('ausgewaehltesArsenalItem')},
     geschossBezeichnung: '', geschossKaliber: '', geschossGewicht: '', geschossBc: '', geschossPreis: '',
     huelseBezeichnung: '', huelseKaliber: '', huelseGewicht: '', huelseLaenge: '', huelseAnzahlWiedergeladen: '', huelsePreis: '',
     pulverBezeichnung: '', pulverPreis: '', pulverNotizen: ''
@@ -58,35 +58,35 @@ export default class ArsenalHinzufuegenScreen extends Component {
           <View style = {styles.container}>
               <TextInput style = {styles.input}
                 underlineColorAndroid = "transparent"
-                placeholder = "Name / Bezeichnung z.B: SMK 168 Moly"
+                placeholder = {this.ausgewaehltesArsenalItem.bezeichnung}
                 placeholderTextColor = "#9a73ef"
                 autoCapitalize = "none"
                 onChangeText = {this.handleGeschossBezeichnung}/>
               
               <TextInput style = {styles.input}
                 underlineColorAndroid = "transparent"
-                placeholder = "Kaliber z.B: .308Win"
+                placeholder = {this.ausgewaehltesArsenalItem.kaliber}
                 placeholderTextColor = "#9a73ef"
                 autoCapitalize = "none"
                 onChangeText = {this.handleGeschossKaliber}/>
                             
               <TextInput style = {styles.input}
                 underlineColorAndroid = "transparent"
-                placeholder = "Gewicht in Grain z.B: 168"
+                placeholder = {this.ausgewaehltesArsenalItem.gewicht}
                 placeholderTextColor = "#9a73ef"
                 autoCapitalize = "none"
                 onChangeText = {this.handleGeschossGewicht}/>
 
               <TextInput style = {styles.input}
                 underlineColorAndroid = "transparent"
-                placeholder = "Balistik-Koeffizient z.B 0.420"
+                placeholder = {this.ausgewaehltesArsenalItem.bc}
                 placeholderTextColor = "#9a73ef"
                 autoCapitalize = "none"
                 onChangeText = {this.handleGeschossBc}/>
 
               <TextInput style = {styles.input}
                 underlineColorAndroid = "transparent"
-                placeholder = "Preis in €/Stück z.B 0.48"
+                placeholder = {this.ausgewaehltesArsenalItem.preis}
                 placeholderTextColor = "#9a73ef"
                 autoCapitalize = "none"
                 onChangeText = {this.handleGeschossPreis}/>
@@ -103,10 +103,9 @@ export default class ArsenalHinzufuegenScreen extends Component {
                   geschossDatensatz.preis = this.state.geschossPreis;
                   geschossDatensatz.bild = {uri: 'https://png.pngtree.com/svg/20161205/bullet_561433.png'};
                   DatenInDBSpeichern(geschossDatensatz);
-                  alert("hier zurückspringen");
-                  this.props.navigation.navigate('ArsenalSubMenueScreen')
+                  this.props.navigation.goBack(); //Ein Screen zurück springen 
                 }}>
-                <Text style = {styles.submitButtonText}> Hinzufügen </Text>
+                <Text style = {styles.submitButtonText}> Speichern </Text>
               </TouchableOpacity>
           </View>
         </View>
@@ -174,10 +173,9 @@ export default class ArsenalHinzufuegenScreen extends Component {
                   huelsenDatensatz.preis = this.state.huelsenPreis;
                   huelsenDatensatz.bild = {uri: 'https://cdn2.iconfinder.com/data/icons/military-9/500/642-512.png'};
                   DatenInDBSpeichern(huelsenDatensatz);
-                  alert("hier zurückspringen");
-                  this.props.navigation.navigate('ArsenalSubMenueScreen')
+                  this.props.navigation.goBack(); //Ein Screen zurück springen 
                 }}>
-                <Text style = {styles.submitButtonText}> Hinzufügen </Text>
+                <Text style = {styles.submitButtonText}> Speichern </Text>
               </TouchableOpacity>
           </View>
         </View>
@@ -221,10 +219,9 @@ export default class ArsenalHinzufuegenScreen extends Component {
                   pulverDatensatz.preis = this.state.pulverPreis;
                   pulverDatensatz.bild = {uri: 'https://pillquan.de/wp-content/uploads/2016/09/icon-dosierung-pulver.png'};
                   DatenInDBSpeichern(pulverDatensatz);
-                  alert("hier zurückspringen");
-                  this.props.navigation.navigate('ArsenalSubMenueScreen')
+                  this.props.navigation.goBack(); //Ein Screen zurück springen 
                 }}>
-                <Text style = {styles.submitButtonText}> Hinzufügen </Text>
+                <Text style = {styles.submitButtonText}> Speichern </Text>
               </TouchableOpacity>
           </View>
 
@@ -235,14 +232,14 @@ export default class ArsenalHinzufuegenScreen extends Component {
 
 
   render() {
-    const ausgewaehltesArsenalMenue = this.props.navigation.getParam('ausgewaehltesArsenalMenue');
-    console.log("HinzufügenScreen für:" +ausgewaehltesArsenalMenue.menueTitel);
+    const ausgewaehltesArsenalItem = this.props.navigation.getParam('ausgewaehltesArsenalItem');
+    console.log("Arsenalbearbeiten für:" +ausgewaehltesArsenalItem.datensatztyp);
     
-    switch(ausgewaehltesArsenalMenue.menueTitel) {
-      case 'Geschosse':
+    switch(ausgewaehltesArsenalItem.datensatztyp) {
+      case 'Geschoss':
         return this.renderGeschosse()
         break;
-      case 'Hülsen':
+      case 'Hülse':
         return this.renderHülsen()
         break;
       case 'Pulver':
@@ -251,27 +248,27 @@ export default class ArsenalHinzufuegenScreen extends Component {
       case 'Zünder':
         return this.renderZuender()
         break;
-      case 'Waffen':
+      case 'Waffe':
         return this.renderWaffen()
         break;
-      case 'Auflagen':
+      case 'Auflage':
         return this.renderAuflagen()
         break;
       case 'Schießstand':
         return this.renderSchießstand()
         break;
-      case 'Beschichtungen':
+      case 'Beschichtung':
         return this.renderBeschichtungen()
         break;
       case 'ReinigungsMedia':
         return this.renderReinigungsMedia()
         break;
-      case 'Matritzen':
+      case 'Matritze':
         return this.renderMatritzen()
         break;
       default:
-        alert("Zu Auswahl: "+ausgewaehltesArsenalMenue.menueTitel +" konnte keine RenderMethode gefunden werden!")
-        console.log("Fehler in ArsenalHinzufügenScreen - Zu Auswahl: "+ausgewaehltesArsenalMenue.menueTitel +" konnte keine RenderMethode gefunden werden!")
+        alert("Zu Auswahl: "+ausgewaehltesArsenalItem.datensatztyp +" konnte keine RenderMethode gefunden werden!")
+        console.log("Fehler in ArsenalHinzufügenScreen - Zu Auswahl: "+ausgewaehltesArsenalItem.datensatztyp +" konnte keine RenderMethode gefunden werden!")
     }
     
     return(

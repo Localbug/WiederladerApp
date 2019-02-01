@@ -85,7 +85,7 @@ export default class ArsenalItemScreen extends Component {
               <ArsenalListItem
                 ausgewaehltesArsenalItem={item}
                 onPress={() =>
-                  this.props.navigation.navigate('ItemDetailsScreen', { //TODO: Detailsansicht mit bearbeiten Modus und Löschenbutton erstellen
+                  this.props.navigation.navigate('ArsenalItemScreen', { //TODO: Detailsansicht mit bearbeiten Modus und Löschenbutton erstellen
                     ausgewaehltesArsenalItem: item
                   })
                 }

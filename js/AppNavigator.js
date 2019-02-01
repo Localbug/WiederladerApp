@@ -14,12 +14,14 @@ import SchießstandItemScreen from './screens/SchießstandScreens/SchießstandIt
 import InfoScreen from './screens/InfoScreen';
 import ArsenalSubMenueScreen from './screens/ArsenalScreens/ArsenalSubMenueScreen';
 import ArsenalHinzufügenScreen from './screens/ArsenalScreens/ArsenalHinzufügenScreen';
+import ArsenalBearbeitenScreen from './screens/ArsenalScreens/ArsenalBearbeitenScreen';
+import ArsenalItemScreen from './screens/ArsenalScreens/ArsenalItemScreen';
 import LaborierungHinzufügenScreen from './screens/LaborierenScreens/LaborierungHinzufügenScreen';
 import TakePictureScreen from './screens/SchießstandScreens/TakePictureScreen'; 
 
 //Um von Stapel an Laborierungen immer das selbe Untermenü aufzurufen -> LaborierungItemScreen
 const ArsenalStack = createStackNavigator(
-  { ArsenalScreen, ArsenalSubMenueScreen, ArsenalHinzufügenScreen},
+  { ArsenalScreen, ArsenalSubMenueScreen, ArsenalItemScreen, ArsenalHinzufügenScreen, ArsenalBearbeitenScreen},
   {
     defaultNavigationOptions: {
       headerStyle: { backgroundColor: 'aliceblue' }
