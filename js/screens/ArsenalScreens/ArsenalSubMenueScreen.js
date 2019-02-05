@@ -18,23 +18,41 @@ export default class ArsenalItemScreen extends Component {
 
   state = { data: [], isLoading: true};
 
+
+  _deUmlaut(value){
+    value = value.toLowerCase();
+    value = value.replace(/ä/g, 'ae');
+    value = value.replace(/ö/g, 'oe');
+    value = value.replace(/ü/g, 'ue');
+    value = value.replace(/ß/g, 'ss');
+    value = value.replace(/ /g, '-');
+    value = value.replace(/\./g, '');
+    value = value.replace(/,/g, '');
+    value = value.replace(/\(/g, '');
+    value = value.replace(/\)/g, '');
+    return value;
+  }
+  
   _ladeDatenausDatenbank(){
     const ausgewaehltesArsenalMenue = this.props.navigation.getParam('ausgewaehltesArsenalMenue');
     
     console.log("Lade DB-Daten für Menue: "+ausgewaehltesArsenalMenue.menueTitel)
-    switch(ausgewaehltesArsenalMenue.menueTitel){
-      case "Geschosse":
-         db.ladeDaten('geschosse', ergebnis => this.setState({data: ergebnis,  isLoading: false }));
-         break;
-      case "Hülsen":
-         db.ladeDaten('huelsen', ergebnis => this.setState({data: ergebnis,  isLoading: false }));
-         break;
-      case "Pulver":
-         db.ladeDaten('pulver', ergebnis => this.setState({data: ergebnis,  isLoading: false }));
-         break;
-      default:
-        console.log('!!!!Fehler in ArsenalSubMenu componenteDidMount - Kein Case zu menuTitel '+ausgewaehltesArsenalMenue.menueTitel+ " gefunden.");
-    }
+    let tabelle = this._deUmlaut(ausgewaehltesArsenalMenue.menueTitel);
+    db.ladeDaten(tabelle, ergebnis => this.setState({data: ergebnis,  isLoading: false }));
+
+    // switch(ausgewaehltesArsenalMenue.menueTitel){
+    //   case "Geschosse":
+    //      db.ladeDaten('geschosse', ergebnis => this.setState({data: ergebnis,  isLoading: false }));
+    //      break;
+    //   case "Hülsen":
+    //      db.ladeDaten('huelsen', ergebnis => this.setState({data: ergebnis,  isLoading: false }));
+    //      break;
+    //   case "Pulver":
+    //      db.ladeDaten('pulver', ergebnis => this.setState({data: ergebnis,  isLoading: false }));
+    //      break;
+    //   default:
+    //     console.log('!!!!Fehler in ArsenalSubMenu componenteDidMount - Kein Case zu menuTitel '+ausgewaehltesArsenalMenue.menueTitel+ " gefunden.");
+    // }
     //console.log('Ergebnis in State gesetzt: '+JSON.stringify(this.state.data));
   }
 
@@ -86,7 +104,7 @@ export default class ArsenalItemScreen extends Component {
                 ausgewaehltesArsenalItem={item}
                 onPress={() =>
                   this.props.navigation.navigate('ArsenalItemScreen', { //TODO: Detailsansicht mit bearbeiten Modus und Löschenbutton erstellen
-                    ausgewaehltesArsenalItem: item
+                    ausgewaehltesArsenalItem: item, ausgewaehltesArsenalMenue: ausgewaehltesArsenalMenue 
                   })
                 }
               />

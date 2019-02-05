@@ -35,29 +35,27 @@ export default class ArsenalScreen extends Component {
           {
             title: 'Waffen:',
             data: [{ key: '5', menueTitel: 'Waffen ', bild: '../../assets/TODO_BildÜbergeben' },
-                  { key: '6', menueTitel: 'Auflage ', bild: '../../assets/TODO_BildÜbergeben'}]
+                  { key: '6', menueTitel: 'Auflagen ', bild: '../../assets/TODO_BildÜbergeben'}]
           },
           {
             title: 'Zubehör & Sonstiges:',
             data: [
-              { key: '7', menueTitel: 'Schießstand', bild: '../../assets/TODO_BildÜbergeben'},
+              { key: '7', menueTitel: 'Schießstände', bild: '../../assets/TODO_BildÜbergeben'},
               { key: '8', menueTitel: 'Beschichtungen', bild: '../../assets/TODO_BildÜbergeben' },
               { key: '9', menueTitel: 'ReinigungsMedia', bild: '../../assets/TODO_BildÜbergeben'  },
               { key: '10', menueTitel: 'Matritzen', bild: '../../assets/TODO_BildÜbergeben' }]
           }
-        ]}
-        renderItem={({ item }) => (
-          <ArsenalMenueEintrag
-            ausgewaehltesArsenalMenue={item}
-            onPress={() =>
-              this.props.navigation.navigate('ArsenalSubMenueScreen', { //Über Property menuScreen statt direkt über 'Screenname'
-                ausgewaehltesArsenalMenue: item
-              })
-            }
-          />
-        )}
-
-
+          ]}
+          renderItem={({ item }) => (
+            <ArsenalMenueEintrag
+              ausgewaehltesArsenalMenue={item}
+              onPress={() =>
+                this.props.navigation.navigate('ArsenalSubMenueScreen', { 
+                  ausgewaehltesArsenalMenue: item 
+                })
+              }
+            />
+          )}
           renderSectionHeader={({ section }) => (
             <SettingsHeader text={section.title} />
           )}

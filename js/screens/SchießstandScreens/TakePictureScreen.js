@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Dimensions, Image, View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import { Camera, Permissions } from 'expo';
 
-//Detailansicht der ausgewählten Laborierung
+//Kamera-Screen um Trefferbild aufzunehmen
 export default class TakePictureScreen extends Component {
   static navigationOptions = ({ navigation }) => {
     const laborierung = navigation.getParam('ausgewaehlteLaborierung');
@@ -25,9 +25,8 @@ export default class TakePictureScreen extends Component {
 
   async snapPhoto() {    
     const laborierung = this.props.navigation.getParam('ausgewaehlteLaborierung');
-    console.log('Button Pressed');
     if (this.camera) {
-       console.log('Taking photo');
+       console.log('Bild aufnehmen');
         //quality (number) -- Specify the quality of compression, from 0 to 1. 0 means compress for small size, 1 means compress for maximum quality.
         //base64 (boolean) -- Whether to also include the image data in Base64 format.
         //exif (boolean) -- Whether to also include the EXIF data for the image
@@ -50,7 +49,7 @@ export default class TakePictureScreen extends Component {
     if (hasCameraPermission === null) {
       return <View />;
     } else if (hasCameraPermission === false) {
-      return <Text>No access to camera</Text>;
+      return <Text>Kein Zugriff auf Kamera gewährt!</Text>;
     } else {
       return (
         <View style={{ flex: 1 }}>

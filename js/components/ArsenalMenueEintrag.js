@@ -8,7 +8,6 @@ export default function(props) {
       <View style={styles.container}>
         <Image
           style={styles.image}
-          //Frage: Icon kann wohl nicht aus Variable geladen werden
           //source={ require(ausgewaehltesArsenalMenue.bild)}
           source={ require('../../assets/hinzufuegenIcon.png')}
         />
