@@ -4,7 +4,6 @@ import { Image, StyleSheet, Text, TouchableOpacity, View, CheckBox } from 'react
 //Laborierung Kurzansicht für ListenView
 export default function(props) {
   const { ausgewaehlteLaborierung, onPress } = props;
-  //console.log("LaborierenListe läd Datensatz: "+JSON.stringify(ausgewaehlteLaborierung));
   return (
     <TouchableOpacity onPress={onPress}>
       <View style={styles.container}>
@@ -42,7 +41,6 @@ const styles = StyleSheet.create({
   },
   info: {
     flexDirection: 'column',
-    //justifyContent: 'space-evenly'
     justifyContent: 'flex-start'
   },
   text: {

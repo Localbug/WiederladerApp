@@ -1,16 +1,7 @@
 import React, { Component } from 'react';
-import {Button, TextInput, TouchableOpacity, ScrollView, StyleSheet, Text, CheckBox, View } from 'react-native';
+import {TextInput, TouchableOpacity, ScrollView, StyleSheet, Text, CheckBox, View } from 'react-native';
 import NumericInput from 'react-native-numeric-input'
 import DBContext from '../../../js/DataContext';
-
-
-function SettingsItem(props) {
-  return <Text style={styles.item}>{props.text}</Text>;
-}
-
-function SettingsHeader(props) {
-  return <Text style={styles.section}>{props.text}</Text>;
-}
 
 function DatenInDBSpeichern(datenObjekt) {
   //console.log("speichere Datensatz: "+JSON.stringify(datenObjekt));
@@ -32,7 +23,6 @@ export default class LaborierungHinzufuegenScreen extends Component {
     laborierungBezeichnung: '', geschossDatensatz: '', huelsenDatensatz: '', pulverDatensatz: '', zuenderDatensatz: '',
     beschichtungDatensatz: '', oAL: '', anzahl: '', notizen: '', fertiggestellt: false
   }
-
 
   //Setze State aus Geschoss-HinzufügenScreen:
   handleLaborierungBezeichnung = (text) => {this.setState({ laborierungBezeichnung: text })}
@@ -160,8 +150,6 @@ export default class LaborierungHinzufuegenScreen extends Component {
                 <CheckBox
                   value={this.state.fertiggestellt}
                   disabled={false}
-                  //onValueChange={() => this.setState({ checked: !this.state.checked })}
-                  //onValueChange={alert("Checkbox geändert")}
                   onValueChange={() => this.setState({ fertiggestellt: !this.state.fertiggestellt })}
                 />
                 <Text style={{marginTop: 5}}> Laborierung fertiggestellt</Text>
@@ -206,9 +194,6 @@ const styles = StyleSheet.create({
   scrollviewcontainer: {
     //flex: 1,
     justifyContent: 'center',
-    //alignItems: 'center',
-    //justifyContent: 'center',
-    //padding: 5
   },
   scrollview: {
     backgroundColor: '#fff'

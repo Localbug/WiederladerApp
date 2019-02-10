@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Dimensions, Image, View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import { Camera, Permissions } from 'expo';
+//Angelehnt an Beispiel aus: https://docs.expo.io/versions/latest/sdk/camera/
+
 
 //Kamera-Screen um Trefferbild aufzunehmen
 export default class TakePictureScreen extends Component {
@@ -112,9 +114,6 @@ const styles = StyleSheet.create({
     paddingTop: 30
   },
   container: {
-    //alignItems: 'center',
-    //justifyContent: 'flex-start',
-    //textAlign: 'left',
     padding: 20
   },
   scrollview: {
@@ -134,6 +133,5 @@ const styles = StyleSheet.create({
   },
   textArea: {
     height: 50,
-    //justifyContent: "flex-start"
   }
 });

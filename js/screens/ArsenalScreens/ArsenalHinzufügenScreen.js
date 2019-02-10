@@ -1,15 +1,6 @@
 import React, { Component } from 'react';
-import {Button, TextInput, TouchableOpacity, ScrollView, StyleSheet, Text, View } from 'react-native';
+import {TextInput, TouchableOpacity, ScrollView, StyleSheet, Text, View } from 'react-native';
 import DBContext from '../../../js/DataContext';
-
-
-function SettingsItem(props) {
-  return <Text style={styles.item}>{props.text}</Text>;
-}
-
-function SettingsHeader(props) {
-  return <Text style={styles.section}>{props.text}</Text>;
-}
 
 function DatenInDBSpeichern(datenObjekt) {
   //console.log("speichere Datensatz: "+JSON.stringify(datenObjekt));

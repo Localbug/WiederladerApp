@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Dimensions, Image, ScrollView, View, TouchableOpacity, StyleSheet, Text, Button } from 'react-native';
+import { Dimensions, Image, View, StyleSheet, Text, Button } from 'react-native';
 import DBContext from '../../DataContext';
 
 //Detailansicht der ausgewählten ArsenalKomponente
@@ -10,7 +10,6 @@ export default class ArsenalItemScreen extends Component {
       title: `${laborierung.bezeichnung} ${":"}`
     };
   };
-
 
   deUmlaut(value){
     value = value.toLowerCase();
@@ -36,8 +35,6 @@ export default class ArsenalItemScreen extends Component {
     db = new DBContext();
     db.aktualisiereDatensatz(tabelle, datenObjekt);
   }
-
-  
 
   render() {
     const ausgewaehltesArsenalItem = this.props.navigation.getParam('ausgewaehltesArsenalItem');
@@ -80,7 +77,6 @@ export default class ArsenalItemScreen extends Component {
 
               <View style={styles.info}>
                 <Text style={styles.text}>
-                  {/* {ausgewaehltesArsenalItem.datensatztyp}{" "} */}
                   Bezeichnung:{ausgewaehltesArsenalItem.bezeichnung}
                 </Text>
                 <Text style={styles.smallText}>
@@ -135,7 +131,6 @@ export default class ArsenalItemScreen extends Component {
 
             <View style={styles.info}>
               <Text style={styles.text}>
-                {/* {ausgewaehltesArsenalItem.datensatztyp}{" "} */}
                 Bezeichnung:{ausgewaehltesArsenalItem.bezeichnung}
               </Text>
               <Text style={styles.smallText}>
@@ -184,7 +179,6 @@ export default class ArsenalItemScreen extends Component {
 
             <View style={styles.info}>
               <Text style={styles.text}>
-                {/* {ausgewaehltesArsenalItem.datensatztyp}{" "} */}
                 Bezeichnung:{ausgewaehltesArsenalItem.bezeichnung}
               </Text>
               <Text style={styles.smallText}>
@@ -227,9 +221,6 @@ const styles = StyleSheet.create({
     paddingTop: 30
   },
   container: {
-    //alignItems: 'center',
-    //justifyContent: 'flex-start',
-    //textAlign: 'left',
     flexDirection: 'column',
     padding: 20
   },

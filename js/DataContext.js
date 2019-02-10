@@ -1,7 +1,6 @@
 import { SQLite } from "expo";
-//import { join } from "path";
 
-const database = SQLite.openDatabase("testdb2.db");
+const database = SQLite.openDatabase("wiederladerDB1.db");
 
 function loescheTabelle(tabellenname) {
   //console.log("DataContext - Funktion loescheTabelle: " + tabellenname);
@@ -282,7 +281,7 @@ function ladeDBdaten(tabellenname, callback) {
 
   //console.log("Lade Tabellenname: "+tabellenname);
   database.transaction(tx => {
-    tx.executeSql("select * from " + tabellenname, [], (_, { rows }) => {
+    tx.executeSql("select * from " + tabellenname, [], (_, { rows }) => { //TODO: Info: Hier ohne ?-Platzhalter. Potenzielle SQL.Injektion gefahr
       console.log(
         "DataContext - ladeDBdaten aus Tabelle:" +
           tabellenname +

@@ -35,7 +35,6 @@ export default class LaborierungItemScreen extends Component {
           <CheckBox
             value={laborierung.fertiggestellt}
             disabled={true}
-            //onValueChange={() => this.setState({ checked: !this.state.checked })}
             //onValueChange={() => {laborierung.fertiggestellt = checked; this.DatenInDBAktualisieren(laborierung.bezeichnung)}} //TODO: Fertiggstellt Updaten
           />
           <Text style={{marginTop: 5}}> Laborierung fertiggestellt</Text>
@@ -107,9 +106,6 @@ const styles = StyleSheet.create({
     paddingTop: 30
   },
   container: {
-    //alignItems: 'center',
-    //justifyContent: 'flex-start',
-    //textAlign: 'left',
     padding: 20
   },
   scrollview: {

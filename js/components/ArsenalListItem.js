@@ -5,7 +5,6 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 export default function(props) {
   const { ausgewaehltesArsenalItem, onPress } = props;
 
-  //console.log("!!!!!ArsenalListItem anzeige für DatensatzTyp: " +JSON.stringify(ausgewaehltesArsenalItem));
   switch (ausgewaehltesArsenalItem.datensatztyp) {
     case "Geschoss":
       return (
@@ -13,8 +12,6 @@ export default function(props) {
           <View style={styles.container}>
             <Image
               style={styles.image}
-              //Frage: Wie kann ich ein Bild aus assert über den State setzen? Require kann keine Variablen übernehmen. Pfad muss wohl static sein
-              //source={{ uri: 'https://image.freepik.com/freie-ikonen/benutzerprofil-bearbeiten-taste_318-32453.jpg'}}
               source = { require('../../assets/GeschossIcon.png')}
             />
             <View style={styles.info}>
@@ -28,9 +25,6 @@ export default function(props) {
               <Text style={styles.smallText}>
                 BC: {ausgewaehltesArsenalItem.bc} - Preis:{ausgewaehltesArsenalItem.preis}€
               </Text>
-              {/* <Text style={styles.smallText}>
-                pic: {ausgewaehltesArsenalItem.bild}
-              </Text> */}
             </View>
           </View>
         </TouchableOpacity>
@@ -41,8 +35,6 @@ export default function(props) {
           <View style={styles.container}>
             <Image
               style={styles.image}
-              //Frage: Wie kann ich ein Bild aus assert über den State setzen? Require kann keine Variablen übernehmen. Pfad muss wohl static sein
-              //source={{ uri: 'https://image.freepik.com/freie-ikonen/benutzerprofil-bearbeiten-taste_318-32453.jpg'}}
               source = { require('../../assets/pulverIcon.png')}
             />
             <View style={styles.info}>
@@ -56,9 +48,6 @@ export default function(props) {
               <Text style={styles.smallText}>
                 Preis:{ausgewaehltesArsenalItem.preis}€/100g
               </Text>
-              {/* <Text style={styles.smallText}>
-                pic: {ausgewaehltesArsenalItem.bild}
-              </Text> */}
             </View>
           </View>
         </TouchableOpacity>
@@ -69,8 +58,6 @@ export default function(props) {
           <View style={styles.container}>
             <Image
               style={styles.image}
-              //Frage: Wie kann ich ein Bild aus assert über den State setzen? Require kann keine Variablen übernehmen. Pfad muss wohl static sein
-              //source={{ uri: 'https://image.freepik.com/freie-ikonen/benutzerprofil-bearbeiten-taste_318-32453.jpg'}}
               source = { require('../../assets/HuelseIcon.png')}
             />
             <View style={styles.info}>
@@ -84,9 +71,6 @@ export default function(props) {
               <Text style={styles.smallText}>
                 BC: {ausgewaehltesArsenalItem.bc} - Preis:{ausgewaehltesArsenalItem.preis}€
               </Text>
-              {/* <Text style={styles.smallText}>
-                pic: {ausgewaehltesArsenalItem.bild}
-              </Text> */}
             </View>
           </View>
         </TouchableOpacity>

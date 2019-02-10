@@ -18,7 +18,6 @@ export default class ArsenalItemScreen extends Component {
 
   state = { data: [], isLoading: true};
 
-
   _deUmlaut(value){
     value = value.toLowerCase();
     value = value.replace(/ä/g, 'ae');
@@ -97,13 +96,13 @@ export default class ArsenalItemScreen extends Component {
     
         <View style={styles.container}>
           <FlatList
-            data={this.state.data} // Aus State die DBAbfrage laden
+            data={this.state.data}
             keyExtractor={item => item.bezeichnung}
             renderItem={({ item }) => (
               <ArsenalListItem
                 ausgewaehltesArsenalItem={item}
                 onPress={() =>
-                  this.props.navigation.navigate('ArsenalItemScreen', { //TODO: Detailsansicht mit bearbeiten Modus und Löschenbutton erstellen
+                  this.props.navigation.navigate('ArsenalItemScreen', { 
                     ausgewaehltesArsenalItem: item, ausgewaehltesArsenalMenue: ausgewaehltesArsenalMenue 
                   })
                 }

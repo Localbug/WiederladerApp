@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Dimensions, Image, ScrollView, View, Button, StyleSheet, Text, FormInput, TextInput, TouchableOpacity } from 'react-native';
+import { Dimensions, Image, ScrollView, View, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
 import NumericInput from 'react-native-numeric-input'
 import DBContext from '../../DataContext';
 
@@ -7,7 +7,7 @@ import DBContext from '../../DataContext';
 //Detailansicht der ausgewählten Laborierung
 export default class SchießstandItemScreen extends Component {
   static navigationOptions = ({ navigation }) => {
-    const laborierung = navigation.getParam('ausgewaehlteLaborierung');
+    //const laborierung = navigation.getParam('ausgewaehlteLaborierung');
     return {
       title: "Ergenisse Eintragen:"//title: `${laborierung.bezeichnung} ${":"}`
     };
